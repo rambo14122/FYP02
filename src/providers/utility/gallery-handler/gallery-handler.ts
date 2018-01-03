@@ -13,11 +13,25 @@ import {Platform} from 'ionic-angular';
 export class GalleryHandlerProvider {
 
   fireStore = firebase.storage();
+  profileImagePath = "/userProfileImages";
+  locationImagePath = "/locationImages";
+  chosenPath = "";
+  chosenChild="";
 
   constructor(public platform: Platform, public imagePicker: ImagePicker) {
   }
 
-
+  setChosenPath(path) {
+    this.chosenPath = path;
+  }
+  setChosenChildAsUid()
+  {
+    this.chosenChild=firebase.auth().currentUser.uid
+  }
+  setChosenChildAsTimeStamp()
+  {
+    this.chosenChild= (new Date()).getTime()+"";
+  }
   getImageFromGallery(numberOfImage) {
     var promise = new Promise((resolve, reject) => {
       if (this.platform.is('android')) {
@@ -49,31 +63,27 @@ export class GalleryHandlerProvider {
       {
         maximumImagesCount: numberOfImage,
         width: 500,
-        quality: 50,
+        quality: 100,
         outputType: 1
       };
+
     var promise = new Promise((resolve, reject) => {
       this.imagePicker.getPictures(galleryOptions).then((results) => {
           if (numberOfImage == 1) {
             var base64String = results[0];
-            var byteCharacters = atob(base64String);
-            var byteNumbers = new Array(byteCharacters.length);
-            for (var i = 0; i < byteCharacters.length; i++) {
-              byteNumbers[i] = byteCharacters.charCodeAt(i);
-            }
-            var byteArray = new Uint8Array(byteNumbers);
-            var imgBlob = new Blob([byteArray], {type: 'image/jpeg'});
-            var imageStore = this.fireStore.ref('/userProfileImages').child(firebase.auth().currentUser.uid);
-            imageStore.put(imgBlob).then((res) => {
-              this.fireStore.ref('/userProfileImages').child(firebase.auth().currentUser.uid).getDownloadURL().then((url) => {
-                resolve(url);
+            var imgBlob = this.getBlob(base64String);
+            var imageStore;
+              imageStore= this.fireStore.ref(this.chosenPath).child(this.chosenChild);
+              imageStore.put(imgBlob).then((res) => {
+                this.fireStore.ref(this.chosenPath).child(this.chosenChild).getDownloadURL().then((url) => {
+                  resolve(url);
+                }).catch((err) => {
+                  reject(err);
+                })
               }).catch((err) => {
                 reject(err);
-              })
-            }).catch((err) => {
-              reject(err);
-            });
-          }
+              });
+            }
         }
       ).catch((err) => {
         console.log(err);
@@ -81,5 +91,17 @@ export class GalleryHandlerProvider {
     });
     return promise;
   }
+
+  getBlob(base64String) {
+    var byteCharacters = atob(base64String);
+    var byteNumbers = new Array(byteCharacters.length);
+    for (var i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    var byteArray = new Uint8Array(byteNumbers);
+    var imgBlob = new Blob([byteArray], {type: 'image/jpeg'});
+    return imgBlob;
+  }
+
 
 }

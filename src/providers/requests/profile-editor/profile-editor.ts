@@ -35,7 +35,7 @@ export class ProfileEditorProvider {
     return promise;
   }
 
-  updateProfileImage(displayName, imageUrl) {
+  updateProfile(displayName, imageUrl) {
     var promise = new Promise((resolve, reject) => {
       this.fireDataBase.child(this.userLoginProvider.getCurrentUserUid()).update({
         displayName: displayName,

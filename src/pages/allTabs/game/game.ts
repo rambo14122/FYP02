@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 /**
- * Generated class for the TabPage page.
+ * Generated class for the GamePage page.
  *
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
@@ -10,16 +10,16 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 @IonicPage()
 @Component({
-  selector: 'page-tab',
-  templateUrl: 'tab.html',
+  selector: 'page-game',
+  templateUrl: 'game.html',
 })
-export class TabPage {
-
-  tab1:string='GamePage';
-  tab2:string='ChatPage';
-  tab3:string='AboutPage';
+export class GamePage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
+  }
+
+  ionViewDidLoad() {
+    console.log('ionViewDidLoad GamePage');
   }
 
 }

@@ -27,6 +27,8 @@ export class ProfilePage {
   }
 
   chooseImage() {
+    this.galleryHandlerProvider.setChosenPath(this.galleryHandlerProvider.profileImagePath);
+    this.galleryHandlerProvider.setChosenChildAsUid();
     this.loaderHandlerProvider.presentLoader("Loading image");
     this.galleryHandlerProvider.getImageFromGallery(1).then((url: any) => {
       this.ngZone.run(() => {
@@ -44,7 +46,7 @@ export class ProfilePage {
       return;
     }
     this.loaderHandlerProvider.presentLoader("Updating profile")
-    this.profileEditorProvider.updateProfileImage(this.displayName, this.imageUrl).then(() => {
+    this.profileEditorProvider.updateProfile(this.displayName, this.imageUrl).then(() => {
       this.loaderHandlerProvider.dismissLoader();
       this.navCtrl.setRoot("TabPage");
     }).catch(() => {
