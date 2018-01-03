@@ -25,8 +25,8 @@
 
   <ion-item-group *ngIf="showForm">
     <ion-item>
-      <ion-input type="text" placeholder="Location name:" [(ngModel)]="location.name"></ion-input>
-      <ion-select [(ngModel)]="location.type">
+      <ion-input type="text" placeholder="Location name:" [(ngModel)]="locationTemp.name"></ion-input>
+      <ion-select [(ngModel)]="locationTemp.type">
         <ion-option value="start">Start point</ion-option>
         <ion-option value="random" [selected]="true">Random point</ion-option>
         <ion-option value="end">End point</ion-option>
@@ -36,7 +36,7 @@
 
 
     <div class="locationImage">
-      <img src="{{location.photoUrl}}">
+      <img src="{{locationTemp.photoUrl}}">
     </div>
     <button ion-button block (click)="chooseImage()">Choose from Gallery</button>
     <div class="spacer" style="height: 20px;"></div>

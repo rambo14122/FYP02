@@ -38,9 +38,9 @@ export class GalleryHandlerProvider {
         this.imagePicker.requestReadPermission().then((res) => {
           if (res == "OK") {
             this.getImageFromGalleryFurther(numberOfImage).then((url) => {
-
               resolve(url);
-            }).catch(() => {
+            }).catch((err) => {
+              reject(err);
             });
           }
         }, (err) => {
@@ -50,7 +50,8 @@ export class GalleryHandlerProvider {
 
         this.getImageFromGalleryFurther(numberOfImage).then((url) => {
           resolve(url);
-        }).catch(() => {
+        }).catch((err) => {
+          reject(err);
         });
 
       }

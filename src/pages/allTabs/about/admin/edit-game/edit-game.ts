@@ -14,29 +14,41 @@ import {LocationInterface} from '../../../../../assets/models/interfaces/Locatio
 })
 export class EditGamePage {
   @ViewChild(Content) content: Content;
-  gameDetails:any;
-  location = {} as LocationInterface;
+  gameDetails: any;
+  locationTemp = {} as LocationInterface;
   showForm = false;
+  locationDetails: LocationInterface[];
 
-  constructor(public toastHandlerProvider:ToastHandlerProvider,public events:Events,public gameManager: GameManagerProvider, public ngZone: NgZone, public loaderHandlerProvider: LoaderHandlerProvider, public galleryHandlerProvider: GalleryHandlerProvider, public navCtrl: NavController, public navParams: NavParams) {
-    this.location.photoUrl = this.gameManager.locationImageDefault;
+  constructor(public toastHandlerProvider: ToastHandlerProvider, public events: Events, public gameManager: GameManagerProvider, public ngZone: NgZone, public loaderHandlerProvider: LoaderHandlerProvider, public galleryHandlerProvider: GalleryHandlerProvider, public navCtrl: NavController, public navParams: NavParams) {
+    this.locationTemp.photoUrl = this.gameManager.locationImageDefault;
   }
+
   ionViewWillEnter() {
     this.gameManager.getGameDetail();
     this.events.subscribe('gameDetails', () => {
-      this.gameDetails = this.gameManager.gameDetails;
-    })
+        if (this.gameManager.gameDetails != null) {
+          this.gameDetails = this.gameManager.gameDetails;
+          for (let [key, value] of Object.entries(this.gameDetails["LocationTable"])) {
+            this.locationDetails.push(value);
+          }
+          console.log(this.locationDetails);
+          console.log(this.locationDetails.name);
+        }
+      }
+    )
   }
+
   ionViewDidLeave() {
     this.events.unsubscribe('gameDetails');
   }
+
   chooseImage() {
     this.galleryHandlerProvider.setChosenPath(this.galleryHandlerProvider.locationImagePath);
     this.galleryHandlerProvider.setChosenChildAsTimeStamp();
     this.loaderHandlerProvider.presentLoader("Loading image");
     this.galleryHandlerProvider.getImageFromGallery(1).then((url: any) => {
       this.ngZone.run(() => {
-        this.location.photoUrl = url;
+        this.locationTemp.photoUrl = url;
       });
       this.loaderHandlerProvider.dismissLoader();
     }).catch(() => {
@@ -45,21 +57,21 @@ export class EditGamePage {
   }
 
   addLocation() {
-    if (this.location.name == "") {
+    if (this.locationTemp.name == "") {
       this.toastHandlerProvider.presentToast("Location name can not be empty");
       return;
     }
-    if(this.location.type='random')
-    {
-      this.location.order=1;
+    if (this.locationTemp.type = 'random') {
+      this.locationTemp.order = 1;
+    } else {
+      this.locationTemp.order = 0;
     }
-    console.log(this.location);
-    // this.loaderHandlerProvider.presentLoader("Updating profile")
-    // this.gameManager.editGameLocation(location).then(() => {
-    //   this.loaderHandlerProvider.dismissLoader();
-    // }).catch(() => {
-    //   this.loaderHandlerProvider.dismissLoader();
-    // });
+    this.loaderHandlerProvider.presentLoader("Updating profile")
+    this.gameManager.updateGameLocation(this.locationTemp).then(() => {
+      this.loaderHandlerProvider.dismissLoader();
+    }).catch(() => {
+      this.loaderHandlerProvider.dismissLoader();
+    });
   }
 
   toggleForm() {
