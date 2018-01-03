@@ -19,20 +19,29 @@ export class GalleryHandlerProvider {
 
 
   getImageFromGallery(numberOfImage) {
-    if (this.platform.is('android')) {
-      var promise = new Promise((resolve, reject) => {
+    var promise = new Promise((resolve, reject) => {
+      if (this.platform.is('android')) {
         this.imagePicker.requestReadPermission().then((res) => {
           if (res == "OK") {
-            this.getImageFromGalleryFurther(numberOfImage);
+            this.getImageFromGalleryFurther(numberOfImage).then((url) => {
+
+              resolve(url);
+            }).catch(() => {
+            });
           }
         }, (err) => {
         });
-      });
-    }
-    else {
-      this.getImageFromGalleryFurther(numberOfImage);
-    }
+      }
+      else {
 
+        this.getImageFromGalleryFurther(numberOfImage).then((url) => {
+          resolve(url);
+        }).catch(() => {
+        });
+
+      }
+    });
+    return promise;
   }
 
   getImageFromGalleryFurther(numberOfImage) {
@@ -70,6 +79,7 @@ export class GalleryHandlerProvider {
         console.log(err);
       });
     });
+    return promise;
   }
 
 }

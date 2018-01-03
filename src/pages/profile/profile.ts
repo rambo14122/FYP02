@@ -4,6 +4,7 @@ import {ProfileEditorProvider} from '../../providers/requests/profile-editor/pro
 import {ImageHandlerProvider} from '../../providers/utility/image-handler/image-handler';
 import {LoaderHandlerProvider} from '../../providers/utility/loader-handler/loader-handler';
 import {GalleryHandlerProvider} from '../../providers/utility/gallery-handler/gallery-handler';
+import {ToastHandlerProvider} from '../../providers/utility/toast-handler/toast-handler';
 
 /**
  * Generated class for the ProfilePage page.
@@ -19,23 +20,35 @@ import {GalleryHandlerProvider} from '../../providers/utility/gallery-handler/ga
 })
 export class ProfilePage {
   imageUrl = "";
+  displayName = "";
 
-  constructor(public galleryHandlerProvider:GalleryHandlerProvider,public platform:Platform,public ngZone:NgZone,public loaderHandlerProvider:LoaderHandlerProvider,public ImageHandlerProvider:ImageHandlerProvider,public profileEditorProvider: ProfileEditorProvider, public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public toastHandlerProvider: ToastHandlerProvider, public galleryHandlerProvider: GalleryHandlerProvider, public platform: Platform, public ngZone: NgZone, public loaderHandlerProvider: LoaderHandlerProvider, public ImageHandlerProvider: ImageHandlerProvider, public profileEditorProvider: ProfileEditorProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.imageUrl = this.profileEditorProvider.defaultImageUrl;
   }
 
-  chooseImage()
-  {
-    this.galleryHandlerProvider.getImageFromGallery(1);
-    // this.ImageHandlerProvider.uploadimage().then((uploadUrl: any) => {
-    //   this.ngZone.run(() => {
-    //     this.imageUrl = uploadUrl;
-    //   })
-    // }).catch(()=>{
-    // });
+  chooseImage() {
+    this.loaderHandlerProvider.presentLoader("Loading image");
+    this.galleryHandlerProvider.getImageFromGallery(1).then((url: any) => {
+      this.ngZone.run(() => {
+        this.imageUrl = url;
+      });
+      this.loaderHandlerProvider.dismissLoader();
+    }).catch(() => {
+      this.loaderHandlerProvider.dismissLoader();
+    });
   }
-  updateProfileImage()
-  {
 
+  updateProfileImage() {
+    if (this.displayName == "") {
+      this.toastHandlerProvider.presentToast("Display name can not be empty");
+      return;
+    }
+    this.loaderHandlerProvider.presentLoader("Updating profile")
+    this.profileEditorProvider.updateProfileImage(this.displayName, this.imageUrl).then(() => {
+      this.loaderHandlerProvider.dismissLoader();
+      this.navCtrl.setRoot("TabPage");
+    }).catch(() => {
+      this.loaderHandlerProvider.dismissLoader();
+    });
   }
 }

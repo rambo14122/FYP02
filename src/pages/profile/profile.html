@@ -14,13 +14,13 @@
     <img src="{{imageUrl}}">
   </div>
   <ion-item>
-    <ion-input type="text" placeholder="Text" [(ngModel)]="nickName"></ion-input>
+    <ion-input type="text" placeholder="Display name:" [(ngModel)]="displayName"></ion-input>
   </ion-item>
 
   <div>
-    <button ion-button round outline (click)="chooseImage()">Choose an image</button>
+    <button ion-button round outline (click)="chooseImage()">Choose from gallery</button>
   </div>
   <div [hidden]="moveon">
-    <button ion-button round outline (click)="updateProfileImage()">Upload & proceed</button>
+    <button ion-button round outline (click)="updateProfileImage()">Proceed</button>
   </div>
 </ion-content>
