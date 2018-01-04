@@ -21,6 +21,7 @@ export class PuzzleDetailPage {
   puzzleDetails;
   gameDetails: any;
   puzzleTempForDisplay = {} as PuzzleInterface;
+  contentHeight: any;
 
   constructor(public toastHandlerProvider: ToastHandlerProvider, public events: Events, public gameManager: GameManagerProvider, public ngZone: NgZone, public loaderHandlerProvider: LoaderHandlerProvider, public galleryHandlerProvider: GalleryHandlerProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.locationDetail = this.navParams.get("locationDetail");
@@ -67,9 +68,9 @@ export class PuzzleDetailPage {
     this.puzzleTemp.strictAnswer = false;
     this.puzzleTemp.photoUrl = this.gameManager.puzzleImageDefault;
 
-    setTimeout(() =>{
-      this.content.scrollToBottom(300);
-    }, 300);
+    this.contentHeight = this.content.scrollHeight-this.content.getContentDimensions().contentTop;
+    console.log(this.contentHeight);
+    this.content.scrollTo(0, this.contentHeight, 300);
   }
 
   updatePuzzle() {
@@ -111,15 +112,15 @@ export class PuzzleDetailPage {
   editPuzzle(puzzleDetail) {
     this.editPuzzleFlag = true;
     this.puzzleTemp = puzzleDetail;
-    setTimeout(() =>{
-      this.content.scrollToBottom(300);
-    }, 300);
+    this.contentHeight = this.content.scrollHeight-this.content.getContentDimensions().contentTop;
+    console.log(this.contentHeight);
+    this.content.scrollTo(0, this.contentHeight, 300);
 
   }
 
   deletePuzzle(puzzleDetail) {
     this.loaderHandlerProvider.presentLoader("Deleting puzzle");
-    this.gameManager.deleteGamePuzzle(puzzleDetail,this.locationDetail.name).then(() => {
+    this.gameManager.deleteGamePuzzle(puzzleDetail, this.locationDetail.name).then(() => {
       this.loaderHandlerProvider.dismissLoader();
     }).catch(() => {
       this.loaderHandlerProvider.dismissLoader();

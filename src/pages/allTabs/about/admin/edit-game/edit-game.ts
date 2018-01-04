@@ -21,7 +21,7 @@ export class EditGamePage {
   editLocationFlag = false;
   locationDetails;
   randomLocations = [];
-
+  contentHeight:any;
   constructor(public toastHandlerProvider: ToastHandlerProvider, public events: Events, public gameManager: GameManagerProvider, public ngZone: NgZone, public loaderHandlerProvider: LoaderHandlerProvider, public galleryHandlerProvider: GalleryHandlerProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.events.subscribe('newGameDetails', () => {
         if (this.gameManager.gameDetails != null) {
@@ -29,7 +29,7 @@ export class EditGamePage {
           for (var tableName in this.gameDetails) {
             if (tableName == 'LocationTable') {
               this.locationDetails = [];
-              this.randomLocations=[];
+              this.randomLocations = [];
               for (var locationName in this.gameDetails[tableName]) {
                 this.locationTempForDisplay = this.gameDetails[tableName][locationName];
                 if (this.locationTempForDisplay.type == 'random') {
@@ -55,8 +55,9 @@ export class EditGamePage {
     this.gameManager.getGameDetail();
 
   }
+  ionViewDidLoad() {
 
- 
+  }
 
   chooseImage() {
     this.galleryHandlerProvider.setChosenPath(this.galleryHandlerProvider.locationImagePath);
@@ -97,17 +98,17 @@ export class EditGamePage {
   }
 
   toggleForm() {
+    this.contentHeight = this.content.scrollHeight-this.content.getContentDimensions().contentTop;
+    console.log(this.contentHeight);
     this.locationTemp = {} as LocationInterface;
     this.addLocationFlag = !this.addLocationFlag;
 
-    this.locationTemp.name="";
-    this.locationTemp.type="random";
-    this.locationTemp.order=0;
+    this.locationTemp.name = "";
+    this.locationTemp.type = "random";
+    this.locationTemp.order = 0;
     this.locationTemp.photoUrl = this.gameManager.locationImageDefault;
 
-    setTimeout(() =>{
-      this.content.scrollToBottom(300);
-    }, 300);
+    this.content.scrollTo(0, this.contentHeight, 300);
   }
 
   viewPuzzles(locationDetail) {
@@ -117,9 +118,9 @@ export class EditGamePage {
   editLocation(locationDetail) {
     this.editLocationFlag = true;
     this.locationTemp = locationDetail;
-    setTimeout(() =>{
-      this.content.scrollToBottom(300);
-    }, 300);
+    this.contentHeight = this.content.scrollHeight-this.content.getContentDimensions().contentTop;
+    console.log(this.contentHeight);
+    this.content.scrollTo(0, this.contentHeight, 300);
   }
 
   deleteLocation(locationDetail) {

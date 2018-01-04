@@ -35,7 +35,7 @@
   <ion-item-group *ngIf="addLocationFlag||editLocationFlag">
     <ion-item>
       <ion-label floating>Location name:</ion-label>
-      <ion-input [readonly]="editLocationFlag" type="text" placeholder="Location name:"
+      <ion-input  [readonly]="editLocationFlag" type="text" placeholder="Location name:"
                  [(ngModel)]="locationTemp.name"></ion-input>
     </ion-item>
     <ion-item>
