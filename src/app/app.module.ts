@@ -23,6 +23,7 @@ import { GalleryHandlerProvider } from '../providers/utility/gallery-handler/gal
 import { ImagePicker } from '@ionic-native/image-picker';
 import { GameManagerProvider } from '../providers/requests/game-manager/game-manager';
 import { Keyboard } from '@ionic-native/keyboard';
+import { GroupManagerProvider } from '../providers/requests/group-manager/group-manager';
 @NgModule({
   declarations: [
     MyApp
@@ -53,7 +54,8 @@ import { Keyboard } from '@ionic-native/keyboard';
     FilePath,
     GalleryHandlerProvider,
     GameManagerProvider,
-    Keyboard
+    Keyboard,
+    GroupManagerProvider
   ]
 })
 export class AppModule {}

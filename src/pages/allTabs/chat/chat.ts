@@ -1,12 +1,6 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-
-/**
- * Generated class for the ChatPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import {Component} from '@angular/core';
+import {Events, IonicPage, NavController, NavParams} from 'ionic-angular';
+import {GroupManagerProvider} from '../../../providers/requests/group-manager/group-manager';
 
 @IonicPage()
 @Component({
@@ -14,12 +8,27 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'chat.html',
 })
 export class ChatPage {
-
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  groupDetails: any;
+  groupDetailsArray;
+  constructor(public groupManagerProvider: GroupManagerProvider, public events: Events, public navCtrl: NavController, public navParams: NavParams) {
+    this.events.subscribe('newGroupDetails', () => {
+      if (this.groupManagerProvider.groupDetails != null) {
+        this.groupDetails = this.groupManagerProvider.groupDetails;
+        this.groupDetailsArray = [];
+        for (var groupName in this.groupDetails) {
+          this.groupDetailsArray.push(this.groupDetails[groupName]);
+        }
+        console.log(this.groupDetailsArray);
+      }
+    });
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ChatPage');
+  createGroup() {
+    this.navCtrl.push("GroupProfilePage");
+  }
+
+  ionViewWillEnter() {
+    this.groupManagerProvider.getGroupDetails();
   }
 
 }

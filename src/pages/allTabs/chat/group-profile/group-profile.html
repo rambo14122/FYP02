@@ -1,14 +1,17 @@
 <ion-header>
 
-</ion-header>
+  <ion-navbar color="hcolor">
+    <ion-title>Group Profile</ion-title>
+  </ion-navbar>
 
+</ion-header>
 
 <ion-content padding>
   <div class="profileImage">
-    <img src="{{userTemp.photoUrl}}">
+    <img src="{{groupTemp.photoUrl}}">
   </div>
   <ion-item>
-    <ion-input type="text" placeholder="Display name:" [(ngModel)]="userTemp.name"></ion-input>
+    <ion-input type="text" placeholder="Group name:" [(ngModel)]="groupTemp.name"></ion-input>
   </ion-item>
 
   <div>

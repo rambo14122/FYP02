@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import firebase from 'firebase';
 import {UserLoginProvider} from '../../login/user-login/user-login';
+import {UserInterface} from '../../../assets/models/interfaces/UserInterface';
 
 @Injectable()
 export class ProfileEditorProvider {
@@ -20,28 +21,11 @@ export class ProfileEditorProvider {
     return promise;
   }
 
-  setUserProfile() {
-    var promise = new Promise((resolve, reject) => {
-      this.fireDataBase.child(this.userLoginProvider.getCurrentUserUid()).set(
-        {
-          edited: false,
-          displayName: "",
-          photoURL: this.defaultImageUrl
-        }
-      ).then(() => {
-        resolve(true);
-      })
-    });
-    return promise;
-  }
 
-  updateProfile(displayName, imageUrl) {
+
+  updateProfile(userTemp: UserInterface) {
     var promise = new Promise((resolve, reject) => {
-      this.fireDataBase.child(this.userLoginProvider.getCurrentUserUid()).update({
-        displayName: displayName,
-        photoURL: imageUrl,
-        edited: true
-      }).then(() => {
+      this.fireDataBase.child(this.userLoginProvider.getCurrentUserUid()).set(userTemp).then(() => {
         resolve({success: true});
       }).catch((err) => {
         reject(err);

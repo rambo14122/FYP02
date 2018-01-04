@@ -23,12 +23,7 @@ export class MyApp {
           this.userLoginProvider.anonymousLogin().then((res: any) => {
             this.profileEditorProvider.checkExistence().then((res: any) => {
               if (res == null) {
-                this.profileEditorProvider.setUserProfile().then((res: any) => {
-                  this.rootPage = "ProfilePage";
-                }).catch(()=>
-                {
-                  toastHandleProvider.presentToast("Can not set up your profile, check your network");
-                });
+                this.rootPage = "LoginPage";
               }
               else {
                 if (res.edited) {
@@ -37,7 +32,6 @@ export class MyApp {
                 else {
                   this.rootPage = "ProfilePage";
                 }
-
               }
             }).catch(() => {
               toastHandleProvider.presentToast("Can not check profile, check your network");

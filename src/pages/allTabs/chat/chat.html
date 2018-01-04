@@ -5,8 +5,17 @@
   </ion-navbar>
 
 </ion-header>
-
-
 <ion-content padding>
-
+  <ion-list>
+    <ion-item-sliding *ngFor="let groupDetail of groupDetailsArray">
+      <ion-item><p>{{groupDetail.name}}</p></ion-item>
+      <ion-item-options slide="left">
+        <button ion-button color="primary">
+          <ion-icon name="color-wand"></ion-icon>
+          Edit
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+  <button ion-button block color="danger" (click)="createGroup()">Create Group</button>
 </ion-content>

@@ -68,7 +68,7 @@ export class PuzzleDetailPage {
     this.puzzleTemp.strictAnswer = false;
     this.puzzleTemp.photoUrl = this.gameManager.puzzleImageDefault;
 
-    this.contentHeight = this.content.scrollHeight-this.content.getContentDimensions().contentTop;
+    this.contentHeight = this.content.scrollHeight - this.content.getContentDimensions().contentTop;
     this.content.scrollTo(0, this.contentHeight, 300);
   }
 
@@ -78,7 +78,7 @@ export class PuzzleDetailPage {
       return;
     }
     if (!this.editPuzzleFlag) {
-
+      this.puzzleTemp.order = this.puzzleDetails.length + 1;
     }
     this.loaderHandlerProvider.presentLoader("Updating puzzle")
     this.gameManager.updateGamePuzzle(this.puzzleTemp, this.locationDetail.name).then(() => {
@@ -111,7 +111,7 @@ export class PuzzleDetailPage {
   editPuzzle(puzzleDetail) {
     this.editPuzzleFlag = true;
     this.puzzleTemp = puzzleDetail;
-    this.contentHeight = this.content.scrollHeight-this.content.getContentDimensions().contentTop;
+    this.contentHeight = this.content.scrollHeight - this.content.getContentDimensions().contentTop;
     this.content.scrollTo(0, this.contentHeight, 300);
 
   }

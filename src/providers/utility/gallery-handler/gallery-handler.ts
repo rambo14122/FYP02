@@ -16,6 +16,7 @@ export class GalleryHandlerProvider {
   profileImagePath = "/userProfileImages";
   locationImagePath = "/locationImages";
   puzzleImagePath = "/puzzleImages";
+  groupImagePath = "/groupImage";
   chosenPath = "";
   chosenChild = "";
 
