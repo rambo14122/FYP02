@@ -29,6 +29,7 @@ export class EditGamePage {
           for (var tableName in this.gameDetails) {
             if (tableName == 'LocationTable') {
               this.locationDetails = [];
+              this.randomLocations=[];
               for (var locationName in this.gameDetails[tableName]) {
                 this.locationTempForDisplay = this.gameDetails[tableName][locationName];
                 if (this.locationTempForDisplay.type == 'random') {
@@ -55,9 +56,7 @@ export class EditGamePage {
 
   }
 
-  ionViewDidLeave() {
-    this.events.unsubscribe('newGameDetails');
-  }
+ 
 
   chooseImage() {
     this.galleryHandlerProvider.setChosenPath(this.galleryHandlerProvider.locationImagePath);
@@ -88,7 +87,7 @@ export class EditGamePage {
         this.locationTemp.order = 100;
       }
     }
-    this.loaderHandlerProvider.presentLoader("Updating profile")
+    this.loaderHandlerProvider.presentLoader("Updating location")
     this.gameManager.updateGameLocation(this.locationTemp).then(() => {
       this.loaderHandlerProvider.dismissLoader();
       this.cancelUpdate();
@@ -100,8 +99,15 @@ export class EditGamePage {
   toggleForm() {
     this.locationTemp = {} as LocationInterface;
     this.addLocationFlag = !this.addLocationFlag;
+
+    this.locationTemp.name="";
+    this.locationTemp.type="random";
+    this.locationTemp.order=0;
     this.locationTemp.photoUrl = this.gameManager.locationImageDefault;
-    this.content.scrollToBottom(1000);
+
+    setTimeout(() =>{
+      this.content.scrollToBottom(300);
+    }, 300);
   }
 
   viewPuzzles(locationDetail) {
@@ -111,11 +117,18 @@ export class EditGamePage {
   editLocation(locationDetail) {
     this.editLocationFlag = true;
     this.locationTemp = locationDetail;
-    this.content.scrollToBottom(1000);
+    setTimeout(() =>{
+      this.content.scrollToBottom(300);
+    }, 300);
   }
 
   deleteLocation(locationDetail) {
-
+    this.loaderHandlerProvider.presentLoader("Deleting location");
+    this.gameManager.deleteGameLocation(locationDetail).then(() => {
+      this.loaderHandlerProvider.dismissLoader();
+    }).catch(() => {
+      this.loaderHandlerProvider.dismissLoader();
+    });
   }
 
   cancelUpdate() {

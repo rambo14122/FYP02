@@ -15,8 +15,9 @@ export class GalleryHandlerProvider {
   fireStore = firebase.storage();
   profileImagePath = "/userProfileImages";
   locationImagePath = "/locationImages";
+  puzzleImagePath = "/puzzleImages";
   chosenPath = "";
-  chosenChild="";
+  chosenChild = "";
 
   constructor(public platform: Platform, public imagePicker: ImagePicker) {
   }
@@ -24,14 +25,15 @@ export class GalleryHandlerProvider {
   setChosenPath(path) {
     this.chosenPath = path;
   }
-  setChosenChildAsUid()
-  {
-    this.chosenChild=firebase.auth().currentUser.uid
+
+  setChosenChildAsUid() {
+    this.chosenChild = firebase.auth().currentUser.uid
   }
-  setChosenChildAsTimeStamp()
-  {
-    this.chosenChild= (new Date()).getTime()+"";
+
+  setChosenChildAsTimeStamp() {
+    this.chosenChild = (new Date()).getTime() + "";
   }
+
   getImageFromGallery(numberOfImage) {
     var promise = new Promise((resolve, reject) => {
       if (this.platform.is('android')) {
@@ -74,17 +76,17 @@ export class GalleryHandlerProvider {
             var base64String = results[0];
             var imgBlob = this.getBlob(base64String);
             var imageStore;
-              imageStore= this.fireStore.ref(this.chosenPath).child(this.chosenChild);
-              imageStore.put(imgBlob).then((res) => {
-                this.fireStore.ref(this.chosenPath).child(this.chosenChild).getDownloadURL().then((url) => {
-                  resolve(url);
-                }).catch((err) => {
-                  reject(err);
-                })
+            imageStore = this.fireStore.ref(this.chosenPath).child(this.chosenChild);
+            imageStore.put(imgBlob).then((res) => {
+              this.fireStore.ref(this.chosenPath).child(this.chosenChild).getDownloadURL().then((url) => {
+                resolve(url);
               }).catch((err) => {
                 reject(err);
-              });
-            }
+              })
+            }).catch((err) => {
+              reject(err);
+            });
+          }
         }
       ).catch((err) => {
         console.log(err);

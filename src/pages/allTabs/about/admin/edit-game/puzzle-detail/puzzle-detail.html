@@ -6,18 +6,96 @@
 
 </ion-header>
 <ion-content padding>
-  <ion-list no-lines no-border>
+  <ion-list no-border>
     <ion-list-header no-border no-lines>
       Location detail:
     </ion-list-header>
+    <ion-item>
+      <ion-thumbnail item-start>
+        <img src={{locationDetail.photoUrl}}>
+      </ion-thumbnail>
+      <h2> {{locationDetail.name}}</h2>
+      <p> Location Type:{{locationDetail.type}}</p>
+      <p> Location Order:{{locationDetail.order}}</p>
+    </ion-item>
+    <ion-list-header>Puzzles:</ion-list-header>
+    <ion-item-sliding *ngFor="let puzzleDetail of puzzleDetails">
       <ion-item>
         <ion-thumbnail item-start>
-          <img src={{locationDetail.photoUrl}}>
+          <img src={{puzzleDetail.photoUrl}}>
         </ion-thumbnail>
-        <h2> {{locationDetail.name}}</h2>
-        <p> Location Type:{{locationDetail.type}}</p>
-        <p> Location Order:{{locationDetail.order}}</p>
+        <h2> {{puzzleDetail.title}}</h2>
+        <p> Content:{{puzzleDetail.puzzleContent}}</p>
+        <p> Hint1 :{{puzzleDetail.hint1}}</p>
+        <p> Hint2 :{{puzzleDetail.hint2}}</p>
+        <p> Answer :{{puzzleDetail.answer}}</p>
+        <p>Strict Answer?{{puzzleDetail.strictAnswer}}</p>
+        <p>Special Puzzle?{{puzzleDetail.special}}</p>
+        <p>Order:{{puzzleDetail.order}}</p>
       </ion-item>
-
+      <ion-item-options slide="left">
+        <button ion-button color="primary" (click)="editPuzzle(puzzleDetail)">
+          <ion-icon name="color-wand"></ion-icon>
+          Edit
+        </button>
+        <button ion-button color="danger" (click)="deletePuzzle(puzzleDetail)">
+          <ion-icon name="trash"></ion-icon>
+          Del
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
+  <button ion-button block color="danger" *ngIf="!editPuzzleFlag" (click)="toggleForm()">Add Puzzle</button>
+  <ion-item-group *ngIf="addPuzzleFlag||editPuzzleFlag">
+    <ion-item>
+      <ion-label floating>Puzzle title:</ion-label>
+      <ion-input [readonly]="editPuzzleFlag" type="text" placeholder="Puzzle title:"
+                 [(ngModel)]="puzzleTemp.title"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Puzzle content:</ion-label>
+      <ion-textarea type="text"
+                    [(ngModel)]="puzzleTemp.puzzleContent"></ion-textarea>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Puzzle hint1:</ion-label>
+      <ion-input type="text" placeholder="Puzzle hint1:"
+                 [(ngModel)]="puzzleTemp.hint1"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Puzzle hint2:</ion-label>
+      <ion-input type="text" placeholder="Puzzle hint2:"
+                 [(ngModel)]="puzzleTemp.hint2"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Puzzle answer:</ion-label>
+      <ion-input type="text" placeholder="Puzzle answer:"
+                 [(ngModel)]="puzzleTemp.answer"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Strict answer?</ion-label>
+      <ion-checkbox [(ngModel)]="puzzleTemp.strictAnswer"></ion-checkbox>
+    </ion-item>
+    <ion-item>
+      <ion-label>Puzzle special?</ion-label>
+      <ion-checkbox [(ngModel)]="puzzleTemp.special"></ion-checkbox>
+    </ion-item>
+    <ion-item *ngIf="editPuzzleFlag">
+      <ion-label floating>Puzzle order:</ion-label>
+      <ion-input *ngIf="editPuzzleFlag" type="text" placeholder="Puzzle order:"
+                 [(ngModel)]="puzzleTemp.order"></ion-input>
+    </ion-item>
+
+
+    <div class="puzzleImage">
+      <img src="{{puzzleTemp.photoUrl}}">
+    </div>
+    <button ion-button block (click)="chooseImage()">Choose from Gallery</button>
+    <div class="spacer" style="height: 20px;"></div>
+    <button ion-button block color="hcolor" (click)="updatePuzzle()">Update</button>
+    <div class="spacer" style="height: 20px;"></div>
+    <button ion-button block color="hcolor" (click)="cancelUpdate()">Cancel</button>
+
+  </ion-item-group>
+  <div class="spacer" style="height: 30px;"></div>
 </ion-content>

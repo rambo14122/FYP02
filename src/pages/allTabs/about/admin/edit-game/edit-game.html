@@ -5,8 +5,6 @@
   </ion-navbar>
 
 </ion-header>
-
-
 <ion-content padding>
   <ion-list>
     <ion-item-sliding *ngFor="let locationDetail of locationDetails">
@@ -15,9 +13,9 @@
           <img src={{locationDetail.photoUrl}}>
         </ion-thumbnail>
         <h2> {{locationDetail.name}}</h2>
-        <p> Location Type:{{locationDetail.type}}</p>
-        <p> Location Order:{{locationDetail.order}}</p>
-        <button ion-button clear item-end (click)="viewPuzzles(locationDetail)">View</button>
+        <p> Type: {{locationDetail.type}}</p>
+        <p> Order: {{locationDetail.order}}</p>
+        <button ion-button clear item-end (click)="viewPuzzles(locationDetail)">puzzles</button>
       </ion-item>
       <ion-item-options slide="left">
         <button ion-button color="primary" (click)="editLocation(locationDetail)">
@@ -65,5 +63,6 @@
     <button ion-button block color="hcolor" (click)="cancelUpdate()">Cancel</button>
 
   </ion-item-group>
-  <div class="spacer" style="height: 100px;"></div>
+  <div class="spacer" style="height: 30px;"></div>
 </ion-content>
+

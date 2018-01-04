@@ -22,13 +22,14 @@ import { FilePath } from '@ionic-native/file-path';
 import { GalleryHandlerProvider } from '../providers/utility/gallery-handler/gallery-handler';
 import { ImagePicker } from '@ionic-native/image-picker';
 import { GameManagerProvider } from '../providers/requests/game-manager/game-manager';
+import { Keyboard } from '@ionic-native/keyboard';
 @NgModule({
   declarations: [
     MyApp
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp,{tabsPlacement: 'bottom',scrollAssist: true, autoFocusAssist: true}),
+    IonicModule.forRoot(MyApp,{tabsPlacement: 'top',scrollAssist: true, autoFocusAssist: true}),
     AngularFireModule.initializeApp(config),
     IonicStorageModule.forRoot()
   ],
@@ -52,6 +53,7 @@ import { GameManagerProvider } from '../providers/requests/game-manager/game-man
     FilePath,
     GalleryHandlerProvider,
     GameManagerProvider,
+    Keyboard
   ]
 })
 export class AppModule {}

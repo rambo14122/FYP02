@@ -1,12 +1,7 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {Component} from '@angular/core';
+import {IonicPage, NavController, NavParams} from 'ionic-angular';
+import {Keyboard} from '@ionic-native/keyboard';
 
-/**
- * Generated class for the TabPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage()
 @Component({
@@ -15,11 +10,11 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class TabPage {
 
-  tab1:string='GamePage';
-  tab2:string='ChatPage';
-  tab3:string='AboutPage';
+  tab1: string = 'GamePage';
+  tab2: string = 'ChatPage';
+  tab3: string = 'AboutPage';
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
-  }
 
+  }
 }
