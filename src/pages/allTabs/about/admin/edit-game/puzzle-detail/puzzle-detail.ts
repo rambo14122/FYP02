@@ -69,7 +69,6 @@ export class PuzzleDetailPage {
     this.puzzleTemp.photoUrl = this.gameManager.puzzleImageDefault;
 
     this.contentHeight = this.content.scrollHeight-this.content.getContentDimensions().contentTop;
-    console.log(this.contentHeight);
     this.content.scrollTo(0, this.contentHeight, 300);
   }
 
@@ -113,7 +112,6 @@ export class PuzzleDetailPage {
     this.editPuzzleFlag = true;
     this.puzzleTemp = puzzleDetail;
     this.contentHeight = this.content.scrollHeight-this.content.getContentDimensions().contentTop;
-    console.log(this.contentHeight);
     this.content.scrollTo(0, this.contentHeight, 300);
 
   }

@@ -99,7 +99,6 @@ export class EditGamePage {
 
   toggleForm() {
     this.contentHeight = this.content.scrollHeight-this.content.getContentDimensions().contentTop;
-    console.log(this.contentHeight);
     this.locationTemp = {} as LocationInterface;
     this.addLocationFlag = !this.addLocationFlag;
 
@@ -119,7 +118,7 @@ export class EditGamePage {
     this.editLocationFlag = true;
     this.locationTemp = locationDetail;
     this.contentHeight = this.content.scrollHeight-this.content.getContentDimensions().contentTop;
-    console.log(this.contentHeight);
+
     this.content.scrollTo(0, this.contentHeight, 300);
   }
 
