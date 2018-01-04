@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {Component} from '@angular/core';
+import {IonicPage, NavController, NavParams} from 'ionic-angular';
+import {GameManagerProvider} from '../../../../providers/requests/game-manager/game-manager';
 
 /**
  * Generated class for the AdminPage page.
@@ -17,20 +18,24 @@ export class AdminPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }
-  editGame(){
+
+  editGame() {
     this.navCtrl.push("EditGamePage");
   }
-  manageGroup(){
+
+  manageGroup() {
 
   }
-  manageUser(){
+
+  manageUser() {
 
   }
 
-  gameStart(){
+  gameStart() {
 
   }
-  gameEnd(){
+
+  gameEnd() {
 
   }
 

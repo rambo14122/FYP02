@@ -16,30 +16,47 @@ export class EditGamePage {
   @ViewChild(Content) content: Content;
   gameDetails: any;
   locationTemp = {} as LocationInterface;
-  showForm = false;
-  locationDetails: LocationInterface[];
+  locationTempForDisplay = {} as LocationInterface;
+  addLocationFlag = false;
+  editLocationFlag = false;
+  locationDetails;
+  randomLocations = [];
 
   constructor(public toastHandlerProvider: ToastHandlerProvider, public events: Events, public gameManager: GameManagerProvider, public ngZone: NgZone, public loaderHandlerProvider: LoaderHandlerProvider, public galleryHandlerProvider: GalleryHandlerProvider, public navCtrl: NavController, public navParams: NavParams) {
-    this.locationTemp.photoUrl = this.gameManager.locationImageDefault;
-  }
-
-  ionViewWillEnter() {
-    this.gameManager.getGameDetail();
-    this.events.subscribe('gameDetails', () => {
+    this.events.subscribe('newGameDetails', () => {
         if (this.gameManager.gameDetails != null) {
           this.gameDetails = this.gameManager.gameDetails;
-          for (let [key, value] of Object.entries(this.gameDetails["LocationTable"])) {
-            this.locationDetails.push(value);
+          for (var tableName in this.gameDetails) {
+            if (tableName == 'LocationTable') {
+              this.locationDetails = [];
+              for (var locationName in this.gameDetails[tableName]) {
+                this.locationTempForDisplay = this.gameDetails[tableName][locationName];
+                if (this.locationTempForDisplay.type == 'random') {
+                  this.randomLocations.push(this.locationTempForDisplay);
+                }
+                this.locationDetails.push(this.locationTempForDisplay);
+              }
+              this.locationDetails.sort(((a, b) => {
+                if (a.order < b.order)
+                  return -1;
+                if (a.order > b.order)
+                  return 1;
+                return 0;
+              }))
+            }
           }
-          console.log(this.locationDetails);
-          console.log(this.locationDetails.name);
         }
       }
     )
   }
 
+  ionViewWillEnter() {
+    this.gameManager.getGameDetail();
+
+  }
+
   ionViewDidLeave() {
-    this.events.unsubscribe('gameDetails');
+    this.events.unsubscribe('newGameDetails');
   }
 
   chooseImage() {
@@ -56,27 +73,54 @@ export class EditGamePage {
     });
   }
 
-  addLocation() {
+  updateLocation() {
     if (this.locationTemp.name == "") {
       this.toastHandlerProvider.presentToast("Location name can not be empty");
       return;
     }
-    if (this.locationTemp.type = 'random') {
-      this.locationTemp.order = 1;
-    } else {
-      this.locationTemp.order = 0;
+    if (!this.editLocationFlag) {
+      if (this.locationTemp.type = 'random') {
+        this.locationTemp.order = this.randomLocations.length + 1;
+      } else if (this.locationTemp.type = 'start') {
+        this.locationTemp.order = 0;
+      }
+      else {
+        this.locationTemp.order = 100;
+      }
     }
     this.loaderHandlerProvider.presentLoader("Updating profile")
     this.gameManager.updateGameLocation(this.locationTemp).then(() => {
       this.loaderHandlerProvider.dismissLoader();
+      this.cancelUpdate();
     }).catch(() => {
       this.loaderHandlerProvider.dismissLoader();
     });
   }
 
   toggleForm() {
-    this.showForm = !this.showForm;
+    this.locationTemp = {} as LocationInterface;
+    this.addLocationFlag = !this.addLocationFlag;
+    this.locationTemp.photoUrl = this.gameManager.locationImageDefault;
     this.content.scrollToBottom(1000);
+  }
+
+  viewPuzzles(locationDetail) {
+    this.navCtrl.push("PuzzleDetailPage", {"locationDetail": locationDetail});
+  }
+
+  editLocation(locationDetail) {
+    this.editLocationFlag = true;
+    this.locationTemp = locationDetail;
+    this.content.scrollToBottom(1000);
+  }
+
+  deleteLocation(locationDetail) {
+
+  }
+
+  cancelUpdate() {
+    this.editLocationFlag = false;
+    this.addLocationFlag = false;
   }
 
 

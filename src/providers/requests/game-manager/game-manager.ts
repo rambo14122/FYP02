@@ -15,8 +15,7 @@ export class GameManagerProvider {
   getGameDetail() {
     this.fireDataBase.on('value', (snapshot) => {
       this.gameDetails = snapshot.val();
-      console.log(this.gameDetails);
-      this.events.publish('gameDetails');
+      this.events.publish('newGameDetails');
     });
   }
 

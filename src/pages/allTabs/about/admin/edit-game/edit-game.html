@@ -1,38 +1,58 @@
-<!--
-  Generated template for the EditGamePage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
 
-  <ion-navbar>
-    <ion-title color="hcolor">EditGame</ion-title>
+  <ion-navbar color="hcolor">
+    <ion-title>EditGame</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-  <ion-item-group *ngFor="let temp of game">
-    <ion-item-divider color="light">A</ion-item-divider>
-    <ion-item>Angola</ion-item>
-    <ion-item>Argentina</ion-item>
-  </ion-item-group>
+  <ion-list>
+    <ion-item-sliding *ngFor="let locationDetail of locationDetails">
+      <ion-item>
+        <ion-thumbnail item-start>
+          <img src={{locationDetail.photoUrl}}>
+        </ion-thumbnail>
+        <h2> {{locationDetail.name}}</h2>
+        <p> Location Type:{{locationDetail.type}}</p>
+        <p> Location Order:{{locationDetail.order}}</p>
+        <button ion-button clear item-end (click)="viewPuzzles(locationDetail)">View</button>
+      </ion-item>
+      <ion-item-options slide="left">
+        <button ion-button color="primary" (click)="editLocation(locationDetail)">
+          <ion-icon name="color-wand"></ion-icon>
+          Edit
+        </button>
+        <button ion-button color="danger" (click)="deleteLocation(locationDetail)">
+          <ion-icon name="trash"></ion-icon>
+          Del
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
 
+  <button ion-button block color="danger" *ngIf="!editLocationFlag" (click)="toggleForm()">Add Location</button>
 
-    <button ion-button block color="danger" (click)="toggleForm()">Add Location</button>
-
-  <ion-item-group *ngIf="showForm">
+  <ion-item-group *ngIf="addLocationFlag||editLocationFlag">
     <ion-item>
-      <ion-input type="text" placeholder="Location name:" [(ngModel)]="locationTemp.name"></ion-input>
+      <ion-label floating>Location name:</ion-label>
+      <ion-input [readonly]="editLocationFlag" type="text" placeholder="Location name:"
+                 [(ngModel)]="locationTemp.name"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Location type:</ion-label>
       <ion-select [(ngModel)]="locationTemp.type">
         <ion-option value="start">Start point</ion-option>
-        <ion-option value="random" [selected]="true">Random point</ion-option>
+        <ion-option value="random">Random point</ion-option>
         <ion-option value="end">End point</ion-option>
       </ion-select>
     </ion-item>
-
+    <ion-item *ngIf="editLocationFlag">
+      <ion-label floating>Location order:</ion-label>
+      <ion-input *ngIf="editLocationFlag" type="text" placeholder="Location order:"
+                 [(ngModel)]="locationTemp.order"></ion-input>
+    </ion-item>
 
 
     <div class="locationImage">
@@ -40,7 +60,10 @@
     </div>
     <button ion-button block (click)="chooseImage()">Choose from Gallery</button>
     <div class="spacer" style="height: 20px;"></div>
-    <button ion-button block color="hcolor" (click)="addLocation()">Update</button>
+    <button ion-button block color="hcolor" (click)="updateLocation()">Update</button>
+    <div class="spacer" style="height: 20px;"></div>
+    <button ion-button block color="hcolor" (click)="cancelUpdate()">Cancel</button>
+
   </ion-item-group>
   <div class="spacer" style="height: 100px;"></div>
 </ion-content>

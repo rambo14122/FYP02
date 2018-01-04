@@ -1,0 +1,23 @@
+<ion-header>
+
+  <ion-navbar color="hcolor">
+    <ion-title>Puzzle Detail</ion-title>
+  </ion-navbar>
+
+</ion-header>
+<ion-content padding>
+  <ion-list no-lines no-border>
+    <ion-list-header no-border no-lines>
+      Location detail:
+    </ion-list-header>
+      <ion-item>
+        <ion-thumbnail item-start>
+          <img src={{locationDetail.photoUrl}}>
+        </ion-thumbnail>
+        <h2> {{locationDetail.name}}</h2>
+        <p> Location Type:{{locationDetail.type}}</p>
+        <p> Location Order:{{locationDetail.order}}</p>
+      </ion-item>
+
+  </ion-list>
+</ion-content>
