@@ -10,21 +10,37 @@ export class GameManagerProvider {
   locationImageDefault = "https://firebasestorage.googleapis.com/v0/b/fyp02-baa62.appspot.com/o/locationDefault.jpg?alt=media&token=f963b888-7601-4e65-a8fc-888f6d4ba4ab";
   gameDetails = {};
   puzzleImageDefault = "https://firebasestorage.googleapis.com/v0/b/fyp02-baa62.appspot.com/o/puzzleImageDefault.png?alt=media&token=778a045a-674d-4e06-88b5-fcd2d35082c5";
+  locationId: string;
+  puzzleId: string;
+  puzzleDetails={};
+  locationDetails={};
 
   constructor(public events: Events) {
   }
 
-
-  getGameDetail() {
-    this.fireDataBase.on('value', (snapshot) => {
-      this.gameDetails = snapshot.val();
-      this.events.publish('newGameDetails');
+  getPuzzleDetail()
+  {
+    this.fireDataBase.child('PuzzleTable').on('value', (snapshot) => {
+      console.log("changes puzzle detail");
+      this.puzzleDetails = snapshot.val();
+      this.events.publish('newPuzzleDetails');
     });
+  }
+  getLocationDetail() {
+    this.fireDataBase.child('LocationTable').on('value', (snapshot) => {
+      console.log("changes location detail");
+      this.locationDetails = snapshot.val();
+      this.events.publish('newLocationDetails');
+    });
+  }
+
+  setLocationIdByTimestamp() {
+    this.locationId = (new Date()).getTime() + "";
   }
 
   updateGameLocation(locationTemp: LocationInterface) {
     var promise = new Promise((resolve, reject) => {
-      this.fireDataBase.child('LocationTable').child(locationTemp.name).set(locationTemp).then(() => {
+      this.fireDataBase.child('LocationTable').child(this.locationId).set(locationTemp).then(() => {
         resolve({success: true});
       }).catch((err) => {
         reject(err);
@@ -33,10 +49,10 @@ export class GameManagerProvider {
     return promise;
   }
 
-  deleteGameLocation(locationTemp: LocationInterface) {
+  deleteGameLocation(locationId) {
     var promise = new Promise((resolve, reject) => {
-      this.fireDataBase.child('LocationTable').child(locationTemp.name).remove().then(() => {
-        this.fireDataBase.child('PuzzleTable').child(locationTemp.name).remove().then(() => {
+      this.fireDataBase.child('LocationTable').child(locationId).remove().then(() => {
+        this.fireDataBase.child('PuzzleTable').child(locationId).remove().then(() => {
           resolve({success: true});
         }).catch((err) => {
           reject(err);
@@ -48,9 +64,14 @@ export class GameManagerProvider {
     return promise;
   }
 
-  updateGamePuzzle(puzzleTemp: PuzzleInterface, locationDetailName) {
+  setPuzzleIdbyTimestamp() {
+    this.puzzleId = (new Date()).getTime() + "";
+  }
+
+
+  updateGamePuzzle(puzzleTemp: PuzzleInterface, locationId) {
     var promise = new Promise((resolve, reject) => {
-      this.fireDataBase.child('PuzzleTable').child(locationDetailName).child(puzzleTemp.title).set(puzzleTemp).then(() => {
+      this.fireDataBase.child('PuzzleTable').child(locationId).child(this.puzzleId).set(puzzleTemp).then(() => {
         resolve({success: true});
       }).catch((err) => {
         reject(err);
@@ -58,10 +79,9 @@ export class GameManagerProvider {
     });
     return promise;
   }
-
-  deleteGamePuzzle(puzzleTemp: PuzzleInterface, locationDetailName) {
+  deleteGamePuzzle(puzzleId, locationId) {
     var promise = new Promise((resolve, reject) => {
-      this.fireDataBase.child('PuzzleTable').child(locationDetailName).child(puzzleTemp.title).remove().then(() => {
+      this.fireDataBase.child('PuzzleTable').child(locationId).child(puzzleId).remove().then(() => {
         resolve({success: true});
       }).catch((err) => {
         reject(err);

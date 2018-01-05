@@ -21,21 +21,24 @@ export class EditGamePage {
   editLocationFlag = false;
   locationDetails;
   randomLocations = [];
-  contentHeight:any;
+  contentHeight: any;
+  locationIds = [];
+  locationIdTemp: string;
+
   constructor(public toastHandlerProvider: ToastHandlerProvider, public events: Events, public gameManager: GameManagerProvider, public ngZone: NgZone, public loaderHandlerProvider: LoaderHandlerProvider, public galleryHandlerProvider: GalleryHandlerProvider, public navCtrl: NavController, public navParams: NavParams) {
-    this.events.subscribe('newGameDetails', () => {
-        if (this.gameManager.gameDetails != null) {
-          this.gameDetails = this.gameManager.gameDetails;
-          for (var tableName in this.gameDetails) {
-            if (tableName == 'LocationTable') {
+    this.locationIdTemp = "";
+    this.events.subscribe('newLocationDetails', () => {
+        if (this.gameManager.locationDetails != null) {
+          this.gameDetails = this.gameManager.locationDetails;
               this.locationDetails = [];
               this.randomLocations = [];
-              for (var locationName in this.gameDetails[tableName]) {
-                this.locationTempForDisplay = this.gameDetails[tableName][locationName];
+              this.locationIds = Object.keys(this.gameDetails);
+              for (let locationId of this.locationIds) {
+                this.locationTempForDisplay = this.gameDetails[locationId];
                 if (this.locationTempForDisplay.type == 'random') {
                   this.randomLocations.push(this.locationTempForDisplay);
                 }
-                this.locationDetails.push(this.locationTempForDisplay);
+                this.locationDetails[locationId] = (this.locationTempForDisplay);
               }
               this.locationDetails.sort(((a, b) => {
                 if (a.order < b.order)
@@ -43,18 +46,18 @@ export class EditGamePage {
                 if (a.order > b.order)
                   return 1;
                 return 0;
-              }))
-            }
-          }
+              }));
+
         }
       }
     )
   }
 
   ionViewWillEnter() {
-    this.gameManager.getGameDetail();
+    this.gameManager.getLocationDetail();
 
   }
+
   ionViewDidLoad() {
 
   }
@@ -76,16 +79,22 @@ export class EditGamePage {
       return;
     }
     if (!this.editLocationFlag) {
-      if (this.locationTemp.type = 'random') {
+      if (this.locationTemp.type == 'random') {
         this.locationTemp.order = this.randomLocations.length + 1;
-      } else if (this.locationTemp.type = 'start') {
+      } else if (this.locationTemp.type == 'start') {
         this.locationTemp.order = 0;
       }
       else {
         this.locationTemp.order = 100;
       }
     }
-    this.loaderHandlerProvider.presentLoader("Updating location")
+    this.loaderHandlerProvider.presentLoader("Updating location");
+    if (this.addLocationFlag) {
+      this.gameManager.setLocationIdByTimestamp();
+    }
+    else {
+      this.gameManager.locationId = this.locationIdTemp;
+    }
     this.gameManager.updateGameLocation(this.locationTemp).then(() => {
       this.loaderHandlerProvider.dismissLoader();
       this.cancelUpdate();
@@ -95,7 +104,7 @@ export class EditGamePage {
   }
 
   toggleForm() {
-    this.contentHeight = this.content.scrollHeight-this.content.getContentDimensions().contentTop;
+    this.contentHeight = this.content.scrollHeight - this.content.getContentDimensions().contentTop;
     this.locationTemp = {} as LocationInterface;
     this.addLocationFlag = !this.addLocationFlag;
 
@@ -104,24 +113,24 @@ export class EditGamePage {
     this.locationTemp.order = 0;
     this.locationTemp.photoUrl = this.gameManager.locationImageDefault;
 
-    this.content.scrollTo(0, this.contentHeight, 300);
+    this.content.scrollTo(0, this.contentHeight-10, 300);
   }
 
-  viewPuzzles(locationDetail) {
-    this.navCtrl.push("PuzzleDetailPage", {"locationDetail": locationDetail});
+  viewPuzzles(locationDetail, locationId) {
+    this.navCtrl.push("PuzzleDetailPage", {"locationDetail": locationDetail, "locationId": locationId});
   }
 
-  editLocation(locationDetail) {
+  editLocation(locationDetail, locationId) {
     this.editLocationFlag = true;
     this.locationTemp = locationDetail;
-    this.contentHeight = this.content.scrollHeight-this.content.getContentDimensions().contentTop;
-
-    this.content.scrollTo(0, this.contentHeight, 300);
+    this.contentHeight = this.content.scrollHeight - this.content.getContentDimensions().contentTop;
+    this.locationIdTemp = locationId;
+    this.content.scrollTo(0, this.contentHeight-10, 300);
   }
 
-  deleteLocation(locationDetail) {
+  deleteLocation(locationId) {
     this.loaderHandlerProvider.presentLoader("Deleting location");
-    this.gameManager.deleteGameLocation(locationDetail).then(() => {
+    this.gameManager.deleteGameLocation(locationId).then(() => {
       this.loaderHandlerProvider.dismissLoader();
     }).catch(() => {
       this.loaderHandlerProvider.dismissLoader();

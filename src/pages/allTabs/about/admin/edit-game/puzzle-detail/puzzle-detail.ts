@@ -18,41 +18,46 @@ export class PuzzleDetailPage {
   puzzleTemp = {} as PuzzleInterface;
   addPuzzleFlag = false;
   editPuzzleFlag = false;
-  puzzleDetails;
+  puzzleDetails = [];
   gameDetails: any;
   puzzleTempForDisplay = {} as PuzzleInterface;
   contentHeight: any;
+  locationId: string;
+  puzzleIds = [];
+  puzzleIdTemp: string;
 
   constructor(public toastHandlerProvider: ToastHandlerProvider, public events: Events, public gameManager: GameManagerProvider, public ngZone: NgZone, public loaderHandlerProvider: LoaderHandlerProvider, public galleryHandlerProvider: GalleryHandlerProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.locationDetail = this.navParams.get("locationDetail");
-    this.events.subscribe('newGameDetails', () => {
-        if (this.gameManager.gameDetails != null) {
-          this.gameDetails = this.gameManager.gameDetails;
-          for (var tableName in this.gameDetails) {
-            if (tableName == "PuzzleTable") {
-              this.puzzleDetails = [];
-              for (var puzzleName in this.gameDetails[tableName][this.locationDetail.name]) {
-                this.puzzleTempForDisplay = this.gameDetails[tableName][this.locationDetail.name][puzzleName];
-                this.puzzleDetails.push(this.puzzleTempForDisplay);
-              }
-              this.puzzleDetails.sort(((a, b) => {
-                if (a.order < b.order)
-                  return -1;
-                if (a.order > b.order)
-                  return 1;
-                return 0;
-              }))
+    this.locationId = this.navParams.get("locationId");
+    this.puzzleIdTemp = "";
+    this.events.subscribe('newPuzzleDetails', () => {
+        if (this.gameManager.puzzleDetails != null) {
+          console.log(this.gameManager.puzzleDetails);
+          this.gameDetails = this.gameManager.puzzleDetails;
+          if (this.gameDetails[this.locationId] != null) {
+            this.puzzleDetails = [];
+            this.puzzleIds = Object.keys(this.gameDetails[this.locationId]);
+            for (let puzzleId of this.puzzleIds) {
+              this.puzzleTempForDisplay = this.gameDetails[this.locationId][puzzleId];
+              this.puzzleDetails[puzzleId] = (this.puzzleTempForDisplay);
             }
+            this.puzzleDetails.sort(((a, b) => {
+              if (a.order < b.order)
+                return -1;
+              if (a.order > b.order)
+                return 1;
+              return 0;
+            }))
           }
+
         }
       }
     );
   }
 
   ionViewWillEnter() {
-    this.gameManager.getGameDetail();
+    this.gameManager.getPuzzleDetail();
   }
-
 
   toggleForm() {
     this.puzzleTemp = {} as PuzzleInterface;
@@ -69,7 +74,7 @@ export class PuzzleDetailPage {
     this.puzzleTemp.photoUrl = this.gameManager.puzzleImageDefault;
 
     this.contentHeight = this.content.scrollHeight - this.content.getContentDimensions().contentTop;
-    this.content.scrollTo(0, this.contentHeight, 300);
+    this.content.scrollTo(0, this.contentHeight-10, 300);
   }
 
   updatePuzzle() {
@@ -78,10 +83,17 @@ export class PuzzleDetailPage {
       return;
     }
     if (!this.editPuzzleFlag) {
-      this.puzzleTemp.order = this.puzzleDetails.length + 1;
+      this.puzzleTemp.order = this.puzzleIds.length + 1;
     }
     this.loaderHandlerProvider.presentLoader("Updating puzzle")
-    this.gameManager.updateGamePuzzle(this.puzzleTemp, this.locationDetail.name).then(() => {
+    if (this.addPuzzleFlag) {
+      this.gameManager.setPuzzleIdbyTimestamp();
+    }
+    else {
+      this.gameManager.puzzleId = this.puzzleIdTemp;
+    }
+
+    this.gameManager.updateGamePuzzle(this.puzzleTemp, this.locationId).then(() => {
       this.loaderHandlerProvider.dismissLoader();
       this.cancelUpdate();
     }).catch(() => {
@@ -105,17 +117,18 @@ export class PuzzleDetailPage {
     });
   }
 
-  editPuzzle(puzzleDetail) {
+  editPuzzle(puzzleDetail, puzzleId) {
     this.editPuzzleFlag = true;
     this.puzzleTemp = puzzleDetail;
+    this.puzzleIdTemp = puzzleId;
     this.contentHeight = this.content.scrollHeight - this.content.getContentDimensions().contentTop;
-    this.content.scrollTo(0, this.contentHeight, 300);
+    this.content.scrollTo(0, this.contentHeight-10, 300);
 
   }
 
-  deletePuzzle(puzzleDetail) {
+  deletePuzzle(puzzleId) {
     this.loaderHandlerProvider.presentLoader("Deleting puzzle");
-    this.gameManager.deleteGamePuzzle(puzzleDetail, this.locationDetail.name).then(() => {
+    this.gameManager.deleteGamePuzzle(puzzleId, this.locationId).then(() => {
       this.loaderHandlerProvider.dismissLoader();
     }).catch(() => {
       this.loaderHandlerProvider.dismissLoader();

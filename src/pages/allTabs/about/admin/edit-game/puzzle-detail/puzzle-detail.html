@@ -19,26 +19,26 @@
       <p> Location Order:{{locationDetail.order}}</p>
     </ion-item>
     <ion-list-header>Puzzles:</ion-list-header>
-    <ion-item-sliding *ngFor="let puzzleDetail of puzzleDetails">
+    <ion-item-sliding *ngFor="let puzzleId of puzzleIds">
       <ion-item text-wrap>
         <ion-thumbnail item-start>
-          <img src={{puzzleDetail.photoUrl}}>
+          <img src={{puzzleDetails[puzzleId].photoUrl}}>
         </ion-thumbnail>
-        <h2> {{puzzleDetail.title}}</h2>
-        <p> Content:{{puzzleDetail.puzzleContent}}</p>
-        <p> Hint1 :{{puzzleDetail.hint1}}</p>
-        <p> Hint2 :{{puzzleDetail.hint2}}</p>
-        <p> Answer :{{puzzleDetail.answer}}</p>
-        <p>Strict Answer?{{puzzleDetail.strictAnswer}}</p>
-        <p>Special Puzzle?{{puzzleDetail.special}}</p>
-        <p>Order:{{puzzleDetail.order}}</p>
+        <h2> {{puzzleDetails[puzzleId].title}}</h2>
+        <p> Content:{{puzzleDetails[puzzleId].puzzleContent}}</p>
+        <p> Hint1 :{{puzzleDetails[puzzleId].hint1}}</p>
+        <p> Hint2 :{{puzzleDetails[puzzleId].hint2}}</p>
+        <p> Answer :{{puzzleDetails[puzzleId].answer}}</p>
+        <p>Strict Answer?{{puzzleDetails[puzzleId].strictAnswer}}</p>
+        <p>Special Puzzle?{{puzzleDetails[puzzleId].special}}</p>
+        <p>Order:{{puzzleDetails[puzzleId].order}}</p>
       </ion-item>
       <ion-item-options slide="left">
-        <button ion-button color="primary" (click)="editPuzzle(puzzleDetail)">
+        <button ion-button color="primary" (click)="editPuzzle(puzzleDetails[puzzleId],puzzleId)">
           <ion-icon name="color-wand"></ion-icon>
           Edit
         </button>
-        <button ion-button color="danger" (click)="deletePuzzle(puzzleDetail)">
+        <button ion-button color="danger" (click)="deletePuzzle(puzzleId)">
           <ion-icon name="trash"></ion-icon>
           Del
         </button>
@@ -49,7 +49,7 @@
   <ion-item-group *ngIf="addPuzzleFlag||editPuzzleFlag">
     <ion-item>
       <ion-label floating>Puzzle title:</ion-label>
-      <ion-input [readonly]="editPuzzleFlag" type="text" placeholder="Puzzle title:"
+      <ion-input  type="text" placeholder="Puzzle title:"
                  [(ngModel)]="puzzleTemp.title"></ion-input>
     </ion-item>
     <ion-item>

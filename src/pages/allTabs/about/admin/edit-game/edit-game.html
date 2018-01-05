@@ -7,22 +7,23 @@
 </ion-header>
 <ion-content padding>
   <ion-list>
-    <ion-item-sliding *ngFor="let locationDetail of locationDetails">
+    <ion-item-sliding *ngFor="let locationId of locationIds">
       <ion-item>
         <ion-thumbnail item-start>
-          <img src={{locationDetail.photoUrl}}>
+          <img src={{locationDetails[locationId].photoUrl}}>
         </ion-thumbnail>
-        <h2> {{locationDetail.name}}</h2>
-        <p> Type: {{locationDetail.type}}</p>
-        <p> Order: {{locationDetail.order}}</p>
-        <button ion-button clear item-end (click)="viewPuzzles(locationDetail)">puzzles</button>
+        <h2> {{locationDetails[locationId].name}}</h2>
+        <p> Type: {{locationDetails[locationId].type}}</p>
+        <p> Order: {{locationDetails[locationId].order}}</p>
+        <button ion-button clear item-end (click)="viewPuzzles(locationDetails[locationId],locationId)">puzzles</button>
       </ion-item>
+
       <ion-item-options slide="left">
-        <button ion-button color="primary" (click)="editLocation(locationDetail)">
+        <button ion-button color="primary" (click)="editLocation(locationDetails[locationId],locationId)">
           <ion-icon name="color-wand"></ion-icon>
           Edit
         </button>
-        <button ion-button color="danger" (click)="deleteLocation(locationDetail)">
+        <button ion-button color="danger" (click)="deleteLocation(locationId)">
           <ion-icon name="trash"></ion-icon>
           Del
         </button>
@@ -35,7 +36,7 @@
   <ion-item-group *ngIf="addLocationFlag||editLocationFlag">
     <ion-item>
       <ion-label floating>Location name:</ion-label>
-      <ion-input  [readonly]="editLocationFlag" type="text" placeholder="Location name:"
+      <ion-input  type="text" placeholder="Location name:"
                  [(ngModel)]="locationTemp.name"></ion-input>
     </ion-item>
     <ion-item>
