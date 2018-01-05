@@ -7,6 +7,7 @@ import {LoaderHandlerProvider} from '../../../../providers/utility/loader-handle
 import {ImageHandlerProvider} from '../../../../providers/utility/image-handler/image-handler';
 import {GroupInterface} from '../../../../assets/models/interfaces/GroupInterface';
 import {UserLoginProvider} from '../../../../providers/login/user-login/user-login';
+import {ProfileEditorProvider} from '../../../../providers/requests/profile-editor/profile-editor';
 
 
 @IonicPage()
@@ -18,22 +19,19 @@ export class GroupProfilePage {
   moveOn = false;
   groupTemp = {} as GroupInterface;
 
-  constructor(public userLoginProvider: UserLoginProvider, public toastHandlerProvider: ToastHandlerProvider, public galleryHandlerProvider: GalleryHandlerProvider, public platform: Platform, public ngZone: NgZone, public loaderHandlerProvider: LoaderHandlerProvider, public ImageHandlerProvider: ImageHandlerProvider, public groupManagerProvider: GroupManagerProvider, public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public profileEditorProvider: ProfileEditorProvider, public userLoginProvider: UserLoginProvider, public toastHandlerProvider: ToastHandlerProvider, public galleryHandlerProvider: GalleryHandlerProvider, public platform: Platform, public ngZone: NgZone, public loaderHandlerProvider: LoaderHandlerProvider, public ImageHandlerProvider: ImageHandlerProvider, public groupManagerProvider: GroupManagerProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.groupTemp.photoUrl = this.groupManagerProvider.groupImageDefault;
   }
 
   chooseImage() {
     this.galleryHandlerProvider.setChosenPath(this.galleryHandlerProvider.groupImagePath);
     this.galleryHandlerProvider.setChosenChildAsTimeStamp();
-    this.loaderHandlerProvider.presentLoader("Loading image");
     this.galleryHandlerProvider.getImageFromGallery(1).then((url: any) => {
       this.ngZone.run(() => {
         this.groupTemp.photoUrl = url;
       });
-      this.loaderHandlerProvider.dismissLoader();
       this.moveOn = true;
     }).catch(() => {
-      this.loaderHandlerProvider.dismissLoader();
     });
   }
 
@@ -42,12 +40,19 @@ export class GroupProfilePage {
       this.toastHandlerProvider.presentToast("Group name can not be empty");
       return;
     }
-    this.groupTemp.groupLeander = this.userLoginProvider.getCurrentUserUid();
-    this.loaderHandlerProvider.presentLoader("Updating profile");
+    this.groupTemp.groupLeader = this.userLoginProvider.getCurrentUserUid();
+    this.loaderHandlerProvider.presentLoader("Updating team profile");
+    this.groupManagerProvider.setGroupIdByTimeStamp();
     this.groupManagerProvider.updateGroupProfile(this.groupTemp).then(() => {
-      this.loaderHandlerProvider.dismissLoader();
-      this.toastHandlerProvider.presentToast("Group " + this.groupTemp.name + " created!")
-      this.navCtrl.pop();
+      this.groupManagerProvider.updateGroupMember(this.userLoginProvider.getCurrentUserUid()).then(() => {
+        this.profileEditorProvider.updatePersonalGroupStatus(this.groupManagerProvider.groupId, this.userLoginProvider.getCurrentUserUid()).then(() => {
+          this.loaderHandlerProvider.dismissLoader();
+          this.navCtrl.setRoot("TabPage");
+        }).catch(() => {
+          this.loaderHandlerProvider.dismissLoader();
+        });
+      }).catch(() => {
+      });
     }).catch(() => {
       this.loaderHandlerProvider.dismissLoader();
     });

@@ -31,15 +31,12 @@ export class ProfilePage {
   chooseImage() {
     this.galleryHandlerProvider.setChosenPath(this.galleryHandlerProvider.profileImagePath);
     this.galleryHandlerProvider.setChosenChildAsUid();
-    this.loaderHandlerProvider.presentLoader("Loading image");
     this.galleryHandlerProvider.getImageFromGallery(1).then((url: any) => {
       this.ngZone.run(() => {
         this.userTemp.photoUrl = url;
       });
-      this.loaderHandlerProvider.dismissLoader();
       this.moveOn = true;
     }).catch(() => {
-      this.loaderHandlerProvider.dismissLoader();
     });
   }
 
@@ -49,7 +46,7 @@ export class ProfilePage {
       return;
     }
     this.loaderHandlerProvider.presentLoader("Updating profile");
-    this.userTemp.edited = false;
+    this.userTemp.edited = true;
     this.userTemp.group="";
     this.profileEditorProvider.updateProfile(this.userTemp).then(() => {
       this.loaderHandlerProvider.dismissLoader();

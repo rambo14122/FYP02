@@ -24,6 +24,8 @@ import { ImagePicker } from '@ionic-native/image-picker';
 import { GameManagerProvider } from '../providers/requests/game-manager/game-manager';
 import { Keyboard } from '@ionic-native/keyboard';
 import { GroupManagerProvider } from '../providers/requests/group-manager/group-manager';
+import { Device } from '@ionic-native/device';
+
 @NgModule({
   declarations: [
     MyApp
@@ -55,7 +57,8 @@ import { GroupManagerProvider } from '../providers/requests/group-manager/group-
     GalleryHandlerProvider,
     GameManagerProvider,
     Keyboard,
-    GroupManagerProvider
+    GroupManagerProvider,
+    Device
   ]
 })
 export class AppModule {}

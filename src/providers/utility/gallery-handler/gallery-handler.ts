@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {ImagePicker} from '@ionic-native/image-picker';
 import firebase from 'firebase';
 import {Platform} from 'ionic-angular';
+import {LoaderHandlerProvider} from '../loader-handler/loader-handler';
 
 /*
   Generated class for the GalleryHandlerProvider provider.
@@ -20,7 +21,7 @@ export class GalleryHandlerProvider {
   chosenPath = "";
   chosenChild = "";
 
-  constructor(public platform: Platform, public imagePicker: ImagePicker) {
+  constructor(public loaderHandlerProvider: LoaderHandlerProvider, public platform: Platform, public imagePicker: ImagePicker) {
   }
 
   setChosenPath(path) {
@@ -70,7 +71,10 @@ export class GalleryHandlerProvider {
         quality: 100,
         outputType: 1
       };
-
+    this.loaderHandlerProvider.presentLoader("Upoading image");
+    setTimeout(() => {
+      this.loaderHandlerProvider.dismissLoader();
+    }, 5000);
     var promise = new Promise((resolve, reject) => {
       this.imagePicker.getPictures(galleryOptions).then((results) => {
           if (numberOfImage == 1) {
@@ -83,6 +87,7 @@ export class GalleryHandlerProvider {
                 resolve(url);
               }).catch((err) => {
                 reject(err);
+
               })
             }).catch((err) => {
               reject(err);

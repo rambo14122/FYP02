@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core';
 import {AngularFireAuth} from "angularfire2/auth";
 import firebase from 'firebase';
+import {Device} from '@ionic-native/device';
 
 @Injectable()
 
 export class UserLoginProvider {
 
 
-
-  constructor(public angularFireAuth: AngularFireAuth) {
+  constructor(public device: Device, public angularFireAuth: AngularFireAuth) {
   }
 
   anonymousLogin() {
@@ -21,10 +21,10 @@ export class UserLoginProvider {
   }
 
   getCurrentUserUid() {
-    return this.angularFireAuth.auth.currentUser.uid;
+    return this.device.uuid;
   }
-  getCurrentUser()
-  {
+
+  getCurrentUser() {
     return this.angularFireAuth.auth.currentUser;
   }
 

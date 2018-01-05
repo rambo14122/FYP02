@@ -97,14 +97,11 @@ export class PuzzleDetailPage {
   chooseImage() {
     this.galleryHandlerProvider.setChosenPath(this.galleryHandlerProvider.puzzleImagePath);
     this.galleryHandlerProvider.setChosenChildAsTimeStamp();
-    this.loaderHandlerProvider.presentLoader("Loading image");
     this.galleryHandlerProvider.getImageFromGallery(1).then((url: any) => {
       this.ngZone.run(() => {
         this.puzzleTemp.photoUrl = url;
       });
-      this.loaderHandlerProvider.dismissLoader();
     }).catch(() => {
-      this.loaderHandlerProvider.dismissLoader();
     });
   }
 

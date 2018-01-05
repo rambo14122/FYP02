@@ -1,12 +1,13 @@
 import {Injectable} from '@angular/core';
 import {LoadingController} from 'ionic-angular';
+import {ToastHandlerProvider} from '../toast-handler/toast-handler';
 
 @Injectable()
 export class LoaderHandlerProvider {
 
   loader: any;
 
-  constructor(public loadingController: LoadingController) {
+  constructor(public toastHandlerProvider: ToastHandlerProvider, public loadingController: LoadingController) {
   }
 
   presentLoader(loaderMessage) {
@@ -14,8 +15,8 @@ export class LoaderHandlerProvider {
       {content: loaderMessage});
     this.loader.present();
   }
-  dismissLoader()
-  {
+
+  dismissLoader() {
     this.loader.dismiss();
   }
 }

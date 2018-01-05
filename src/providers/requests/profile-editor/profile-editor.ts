@@ -20,8 +20,16 @@ export class ProfileEditorProvider {
     });
     return promise;
   }
-
-
+  updatePersonalGroupStatus(groupIdTemp,memberId) {
+    var promise = new Promise((resolve, reject) => {
+      this.fireDataBase.child(memberId).update({"group": groupIdTemp}).then(() => {
+        resolve({success: true});
+      }).catch((err) => {
+        reject(err);
+      })
+    })
+    return promise;
+  }
 
   updateProfile(userTemp: UserInterface) {
     var promise = new Promise((resolve, reject) => {
