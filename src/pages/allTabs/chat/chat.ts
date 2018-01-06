@@ -2,7 +2,8 @@ import {Component} from '@angular/core';
 import {Events, IonicPage, NavController, NavParams} from 'ionic-angular';
 import {ProfileEditorProvider} from '../../../providers/requests/profile-editor/profile-editor';
 import {GroupManagerProvider} from '../../../providers/requests/group-manager/group-manager';
-import {GroupInterface} from '../../../../platforms/android/build/intermediates/assets/debug/www/assets/models/interfaces/GroupInterface';
+import {GroupInterface} from '../../../assets/models/interfaces/GroupInterface';
+import {GameStatusProvider} from '../../../providers/requests/game-status/game-status';
 
 @IonicPage()
 @Component({
@@ -13,11 +14,37 @@ export class ChatPage {
   noGroupFlag = false;
   gotGroupFlag = false;
   groupId: string;
-  singGroupDetail = {} as GroupInterface;
+  singleGroupDetail = {} as GroupInterface;
+  gameInProgress = false;
+  gameEndFlag = false;
+  gameStartFlag = false;
 
-  constructor(public events: Events, public groupManagerProvider: GroupManagerProvider, public profileEditorProvider: ProfileEditorProvider, public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public gameStatusProvider: GameStatusProvider, public events: Events, public groupManagerProvider: GroupManagerProvider, public profileEditorProvider: ProfileEditorProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.noGroupFlag = false;
     this.gotGroupFlag = false;
+    this.gameInProgress = false;
+    this.gameEndFlag = false;
+    this.gameStartFlag = false;
+    this.events.subscribe('newGameStart', () => {
+      if (this.gameStatusProvider.gameStartTime != null && this.gameStatusProvider.gameStartTime != "") {
+        this.gameStartFlag = true;
+        this.gameInProgress = true;
+      }
+      else {
+        this.gameInProgress = false;
+        this.gameStartFlag = false;
+      }
+    });
+    this.events.subscribe('newGameEnd', () => {
+      if (this.gameStatusProvider.gameEndTime != null && this.gameStatusProvider.gameEndTime != "") {
+        this.gameEndFlag = true;
+        this.gameInProgress = false;
+      }
+      else {
+        this.gameEndFlag = false;
+      }
+    })
+
     var groupStatus = this.profileEditorProvider.currentUserDetail.group;
     if (groupStatus == null || groupStatus == "") {
       this.noGroupFlag = true;
@@ -25,10 +52,10 @@ export class ChatPage {
     else {
       this.groupId = groupStatus;
       this.gotGroupFlag = true;
-      this.singGroupDetail = {} as GroupInterface;
+      this.singleGroupDetail = {} as GroupInterface;
       this.events.subscribe('singleGroupDetail', () => {
         if (this.groupManagerProvider.singleGroupDetail != null) {
-          this.singGroupDetail = this.groupManagerProvider.singleGroupDetail;
+          this.singleGroupDetail = this.groupManagerProvider.singleGroupDetail;
         }
       });
     }
@@ -39,7 +66,8 @@ export class ChatPage {
     if (this.groupId != null) {
       this.groupManagerProvider.getSingleGroupDetail(this.groupId);
     }
-
+    this.gameStatusProvider.gameStartListener();
+    this.gameStatusProvider.gameEndListener();
   }
 
   joinGroup() {

@@ -40,7 +40,6 @@ export class GroupProfilePage {
       this.toastHandlerProvider.presentToast("Group name can not be empty");
       return;
     }
-    this.groupTemp.groupLeader = this.userLoginProvider.getCurrentUserUid();
     this.loaderHandlerProvider.presentLoader("Updating team profile");
     this.groupManagerProvider.setGroupIdByTimeStamp();
     this.groupManagerProvider.updateGroupProfile(this.groupTemp).then(() => {

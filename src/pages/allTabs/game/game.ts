@@ -27,14 +27,15 @@ export class GamePage {
     this.gameInProgress = false;
     this.gameEndFlag = false;
     this.gameStartFlag = false;
-
+    this.groupStatus = this.profileEditorProvider.currentUserDetail.group;
     this.events.subscribe('newGameStart', () => {
       if (this.gameStatusProvider.gameStartTime != null && this.gameStatusProvider.gameStartTime != "") {
         this.gameStartTime = this.gameStatusProvider.gameStartTime;
         this.gameStartFlag = true;
         this.gameInProgress = true;
         this.timer = parseInt(this.gameStatusProvider.getTimeStamp()) - parseInt(this.gameStartTime);
-
+        this.toastHandlerProvider.presentToast("Game Started!");
+        clearInterval(this.timerInterval);
         this.timerInterval = setInterval(() => {
           this.timer += 1000;
         }, 1000);
@@ -56,8 +57,6 @@ export class GamePage {
       }
     })
   }
-
-
 
   joinGroup() {
     this.navCtrl.push("JoinGroupPage");

@@ -8,9 +8,15 @@
 
 
 <ion-content padding>
-  <div *ngIf="groupStatus==''"><p>You have to join a group first</p>
-    <button ion-button block color="danger" (click)="joinGroup()">Join Group</button>
+  <div *ngIf="gameEndFlag">
+    <div *ngIf="groupStatus==''"><p>You have to join a group first</p>
+      <button ion-button block color="danger" (click)="joinGroup()">Join Group</button>
+    </div>
+    <div *ngIf="groupStatus!=''&&groupStatus!=null">Welcome, please wait for the game master to start the game!</div>
   </div>
-  <div *ngIf="groupStatus!=''&&groupStatus!=null">Welcome</div>
-  <div *ngIf="">GroupLeader</div>
+  <div *ngIf="gameInProgress">
+    <div *ngIf="groupStatus==''"><p>Game has already started, you can not join group now, follow others and enjoy!</p>
+    </div>
+    <div *ngIf="groupStatus!=''&&groupStatus!=null">Lets solve the puzzles!</div>
+  </div>
 </ion-content>

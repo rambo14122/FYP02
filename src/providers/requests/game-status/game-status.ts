@@ -17,9 +17,10 @@ export class GameStatusProvider {
     return (new Date()).getTime() + "";
   }
 
-  gameStart() {
+  initializeGroupPuzzles(finalMapToSet)
+  {
     var promise = new Promise((resolve, reject) => {
-      this.fireDataBase.set({"start": this.getTimeStamp(),"end":""}).then(() => {
+      this.fireDataBase.set({"start": this.getTimeStamp(),"GroupTable":finalMapToSet,"end":""}).then(() => {
         resolve({success: true});
       }).catch((err) => {
         reject(err);

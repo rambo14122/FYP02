@@ -13,7 +13,6 @@ export class GroupManagerProvider {
   groupDetails = {};
   singleGroupDetail = {} as GroupInterface
   groupId: string;
-  groupLeaderFlag = false;
 
   constructor(public userLoginProvider: UserLoginProvider, public events: Events) {
   }
@@ -52,9 +51,6 @@ export class GroupManagerProvider {
   getSingleGroupDetail(groupId) {
     this.fireDataBase.child(groupId).on('value', (snapshot) => {
       this.singleGroupDetail = snapshot.val();
-      if (this.userLoginProvider.getCurrentUserUid() == this.singleGroupDetail.groupLeader) {
-        this.groupLeaderFlag = true;
-      }
       this.events.publish('singleGroupDetail');
     });
   }

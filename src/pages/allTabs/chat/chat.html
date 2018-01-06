@@ -6,7 +6,11 @@
 
 </ion-header>
 <ion-content padding>
-  test
-  <button  *ngIf="noGroupFlag"ion-button block color="danger" (click)="joinGroup()">Join Group Now</button>
-  <button  *ngIf="gotGroupFlag"ion-button block color="danger" (click)="changeGroup()">Change Group</button>
+  <div *ngIf="gameEndFlag">
+    <button *ngIf="noGroupFlag" ion-button block color="danger" (click)="joinGroup()">Join Group Now</button>
+    <button *ngIf="gotGroupFlag" ion-button block color="danger" (click)="changeGroup()">Change Group</button>
+  </div>
+  <div *ngIf="gameInProgress">
+    Game is in progress. You can not change or join group.
+  </div>
 </ion-content>
