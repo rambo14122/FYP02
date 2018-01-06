@@ -9,7 +9,6 @@ import {PuzzleStatus} from '../../../assets/models/interfaces/PuzzleStatus';
 import {PuzzleInterface} from '../../../assets/models/interfaces/PuzzleInterface';
 
 
-
 @IonicPage()
 @Component({
   selector: 'page-game',
@@ -34,7 +33,6 @@ export class GamePage {
   puzzleDetailArray = [];
   point = 0;
   firstUnsolvedId: string;
-  firstUnsolvedFlag = true;
 
   constructor(public gameManagerProvider: GameManagerProvider, public gameStatusProvider: GameStatusProvider, public events: Events, public groupManagerProvider: GroupManagerProvider, public toastHandlerProvider: ToastHandlerProvider, public profileEditorProvider: ProfileEditorProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.gameInProgress = false;
@@ -45,7 +43,6 @@ export class GamePage {
     this.puzzleStatusDetails = [];
     this.groupStatus = "";
     this.firstUnsolvedId = "";
-    this.firstUnsolvedFlag = true;
     this.profileEditorProvider.setUid();
     this.events.subscribe('userProfileUpdate', () => {
       this.groupStatus = this.profileEditorProvider.currentUserDetail.group;
@@ -91,8 +88,7 @@ export class GamePage {
         this.point = this.puzzleStatus['point'];
         for (let puzzleId of this.puzzleIds) {
           this.puzzleStatusTemp = this.puzzleStatus['puzzles'][puzzleId];
-          if (this.firstUnsolvedFlag && this.puzzleStatusTemp.solved == false) {
-            this.firstUnsolvedFlag = false;
+          if ((this.firstUnsolvedId == "" || this.firstUnsolvedId == null) && this.puzzleStatusTemp.solved == false) {
             this.firstUnsolvedId = puzzleId;
           }
           this.puzzleStatusDetails[puzzleId] = this.puzzleStatusTemp;
@@ -122,6 +118,7 @@ export class GamePage {
     });
   }
 
+
   joinGroup() {
     this.navCtrl.push("JoinGroupPage");
   }
@@ -141,7 +138,14 @@ export class GamePage {
   }
 
   solveThePuzzle(puzzleId) {
-    this.navCtrl.push("SolvePuzzlePage", {"PuzzleId":puzzleId,"PuzzleDetails": this.puzzleDetailArray});
+
+    this.navCtrl.push("SolvePuzzlePage", {
+      "GroupId": this.groupStatus,
+      "PuzzleId": puzzleId,
+      "PuzzleDetail": this.puzzleDetailArray[puzzleId]
+    }).then(() => {
+      this.firstUnsolvedId = "";
+    });
   }
 
 }

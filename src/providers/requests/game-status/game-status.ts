@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import firebase from 'firebase';
 import {Events} from 'ionic-angular';
+import {UserLoginProvider} from '../../login/user-login/user-login';
 
 @Injectable()
 export class GameStatusProvider {
@@ -10,7 +11,7 @@ export class GameStatusProvider {
   gameStatusByGroup = {};
   gameStatusByPuzzle = {};
 
-  constructor(public events: Events) {
+  constructor(public events: Events, public uerLoginProvider: UserLoginProvider) {
     this.gameStartTime = "";
     this.gameEndTime = "";
   }
@@ -59,13 +60,48 @@ export class GameStatusProvider {
     });
   }
 
-  gameStatusListenerPuzzle(groupId, puzzleId) {
-    this.fireDataBase.child('GroupTable').child(groupId).child('puzzles').child('puzzleId').on('value', (snapshot) => {
+  gameStatusListenerByPuzzle(groupId, puzzleId) {
+    this.fireDataBase.child('GroupTable').child(groupId).child('puzzles').child(puzzleId).on('value', (snapshot) => {
       this.gameStatusByPuzzle = snapshot.val();
       this.events.publish('gameStatusByPuzzle');
     });
   }
 
+  revealHint1(groupId, puzzleId) {
+    var promise = new Promise((resolve, reject) => {
+      this.fireDataBase.child('GroupTable').child(groupId).child('puzzles').child(puzzleId).update({hint1: true}).then(() => {
+        resolve({success: true});
+      }).catch((err) => {
+        reject(err);
+      })
+    });
+    return promise;
+  }
+
+  uploadCorrectAnswer(groupId, puzzleId) {
+    var promise = new Promise((resolve, reject) => {
+      this.fireDataBase.child('GroupTable').child(groupId).child('puzzles').child(puzzleId).update({
+        solved: true,
+        solvedBy: this.uerLoginProvider.getCurrentUserUid()
+      }).then(() => {
+        resolve({success: true});
+      }).catch((err) => {
+        reject(err);
+      })
+    });
+    return promise;
+  }
+
+  revealHint2(groupId, puzzleId) {
+    var promise = new Promise((resolve, reject) => {
+      this.fireDataBase.child('GroupTable').child(groupId).child('puzzles').child(puzzleId).update({hint2: true}).then(() => {
+        resolve({success: true});
+      }).catch((err) => {
+        reject(err);
+      })
+    });
+    return promise;
+  }
 
   gameEndListener() {
     this.fireDataBase.child('end').on('value', (snapshot) => {
