@@ -41,10 +41,10 @@ export class GroupProfilePage {
       return;
     }
     this.loaderHandlerProvider.presentLoader("Updating team profile");
-    this.groupManagerProvider.setGroupIdByTimeStamp();
-    this.groupManagerProvider.updateGroupProfile(this.groupTemp).then(() => {
-      this.groupManagerProvider.updateGroupMember(this.userLoginProvider.getCurrentUserUid()).then(() => {
-        this.profileEditorProvider.updatePersonalGroupStatus(this.groupManagerProvider.groupId, this.userLoginProvider.getCurrentUserUid()).then(() => {
+    var groupId = this.groupManagerProvider.setGroupIdByTimeStamp();
+    this.groupManagerProvider.updateGroupProfile(groupId, this.groupTemp).then(() => {
+      this.groupManagerProvider.updateGroupMember(groupId, this.userLoginProvider.getCurrentUserUid()).then(() => {
+        this.profileEditorProvider.updatePersonalGroupStatus(groupId, this.userLoginProvider.getCurrentUserUid()).then(() => {
           this.loaderHandlerProvider.dismissLoader();
           this.navCtrl.setRoot("TabPage");
         }).catch(() => {

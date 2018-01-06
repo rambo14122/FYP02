@@ -105,7 +105,6 @@ export class AdminPage {
       var puzzleOrder = 0;
       var allPuzzles = [];
       var groupStatus = {} as GroupStatus;
-      groupStatus.finishTime = "";
       locationOrder.push(0);
       var randomStartLocation = Math.ceil(Math.random() * (locationIds.length - 1));
       locationOrder.push(randomStartLocation);
@@ -137,7 +136,9 @@ export class AdminPage {
           }
         }
       }
+      groupStatus.finishTime = "";
       groupStatus.puzzles = allPuzzles;
+      groupStatus.point=0;
       finalMapToSet[groupId] = groupStatus;
     }
 

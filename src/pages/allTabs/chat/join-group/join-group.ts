@@ -40,7 +40,7 @@ export class JoinGroupPage {
 
   joinGroup(groupId) {
     this.loaderHandlerProvider.presentLoader("Joining Group");
-    this.groupManagerProvider.updateGroupMember(this.userLoginProvider.getCurrentUserUid()).then(() => {
+    this.groupManagerProvider.updateGroupMember(groupId,this.userLoginProvider.getCurrentUserUid()).then(() => {
       this.profileEditorProvider.updatePersonalGroupStatus(groupId, this.userLoginProvider.getCurrentUserUid()).then(() => {
         this.loaderHandlerProvider.dismissLoader();
         this.navCtrl.pop();

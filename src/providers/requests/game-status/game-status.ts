@@ -7,6 +7,7 @@ export class GameStatusProvider {
   fireDataBase = firebase.database().ref('/GameStatus');
   gameStartTime: string;
   gameEndTime: string;
+  gameStatusByGroup = {};
 
   constructor(public events: Events) {
     this.gameStartTime = "";
@@ -17,10 +18,9 @@ export class GameStatusProvider {
     return (new Date()).getTime() + "";
   }
 
-  initializeGroupPuzzles(finalMapToSet)
-  {
+  initializeGroupPuzzles(finalMapToSet) {
     var promise = new Promise((resolve, reject) => {
-      this.fireDataBase.set({"start": this.getTimeStamp(),"GroupTable":finalMapToSet,"end":""}).then(() => {
+      this.fireDataBase.set({"start": this.getTimeStamp(), "GroupTable": finalMapToSet, "end": ""}).then(() => {
         resolve({success: true});
       }).catch((err) => {
         reject(err);
@@ -50,6 +50,20 @@ export class GameStatusProvider {
       this.events.publish('newGameStart');
     });
   }
+
+  gameStatusListenerByGroup(groupId) {
+    this.fireDataBase.child('GroupTable').child(groupId).on('value', (snapshot) => {
+      this.gameStatusByGroup = snapshot.val();
+      this.events.publish('gameStatusByGroup');
+    });
+  }
+
+  // gameStatusListenerByPuzzle(groupId, puzzleId) {
+  //   this.fireDataBase.child('GroupTable').child(groupId).child(puzzleId).on('value', (snapshot) => {
+  //     this.gameStartTime = snapshot.val();
+  //     this.events.publish('gameStatusByPuzzle');
+  //   });
+  // }
 
   gameEndListener() {
     this.fireDataBase.child('end').on('value', (snapshot) => {

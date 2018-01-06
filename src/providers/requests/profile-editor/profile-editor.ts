@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import firebase from 'firebase';
 import {UserLoginProvider} from '../../login/user-login/user-login';
 import {UserInterface} from '../../../assets/models/interfaces/UserInterface';
+import {Events} from 'ionic-angular';
 
 @Injectable()
 export class ProfileEditorProvider {
@@ -10,7 +11,7 @@ export class ProfileEditorProvider {
   defaultImageUrl = 'https://firebasestorage.googleapis.com/v0/b/myapp-4eadd.appspot.com/o/chatterplace.png?alt=media&token=e51fa887-bfc6-48ff-87c6-e2c61976534e'
   currentUserDetail = {} as UserInterface;
 
-  constructor(public userLoginProvider: UserLoginProvider) {
+  constructor(public events: Events, public userLoginProvider: UserLoginProvider) {
   }
 
   checkExistence() {
@@ -21,6 +22,13 @@ export class ProfileEditorProvider {
       })
     });
     return promise;
+  }
+
+  checkExistenceConcurrently() {
+      this.fireDataBase.child(this.userLoginProvider.getCurrentUserUid()).on('value', (snapshot) => {
+        this.currentUserDetail = snapshot.val();
+        this.events.publish("userProfileUpdate");
+      });
   }
 
   updatePersonalGroupStatus(groupIdTemp, memberId) {

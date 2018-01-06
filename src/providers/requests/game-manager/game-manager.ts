@@ -12,26 +12,35 @@ export class GameManagerProvider {
   puzzleImageDefault = "https://firebasestorage.googleapis.com/v0/b/fyp02-baa62.appspot.com/o/puzzleImageDefault.png?alt=media&token=778a045a-674d-4e06-88b5-fcd2d35082c5";
   locationId: string;
   puzzleId: string;
-  puzzleDetails={};
-  locationDetails={};
+  puzzleDetails = {};
+  locationDetails = {};
 
   constructor(public events: Events) {
   }
 
-  getGameDetail()
-  {
+  getGameDetail() {
     this.fireDataBase.on('value', (snapshot) => {
       this.gameDetails = snapshot.val();
       this.events.publish('newGameDetails');
     });
   }
-  getPuzzleDetail()
-  {
+
+  getPuzzleDetail() {
     this.fireDataBase.child('PuzzleTable').on('value', (snapshot) => {
       this.puzzleDetails = snapshot.val();
       this.events.publish('newPuzzleDetails');
     });
   }
+
+  getPuzzleDetailOnce() {
+    var promise = new Promise((resolve, reject) => {
+      this.fireDataBase.child('PuzzleTable').once('value', (snapshot) => {
+        resolve(snapshot.val());
+      });
+    });
+    return promise;
+  }
+
   getLocationDetail() {
     this.fireDataBase.child('LocationTable').on('value', (snapshot) => {
       this.locationDetails = snapshot.val();
@@ -84,6 +93,7 @@ export class GameManagerProvider {
     });
     return promise;
   }
+
   deleteGamePuzzle(puzzleId, locationId) {
     var promise = new Promise((resolve, reject) => {
       this.fireDataBase.child('PuzzleTable').child(locationId).child(puzzleId).remove().then(() => {

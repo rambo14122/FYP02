@@ -18,13 +18,31 @@ export class ChatPage {
   gameInProgress = false;
   gameEndFlag = false;
   gameStartFlag = false;
-
+  groupStatus:string;
   constructor(public gameStatusProvider: GameStatusProvider, public events: Events, public groupManagerProvider: GroupManagerProvider, public profileEditorProvider: ProfileEditorProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.noGroupFlag = false;
     this.gotGroupFlag = false;
     this.gameInProgress = false;
     this.gameEndFlag = false;
     this.gameStartFlag = false;
+    this.events.subscribe('userProfileUpdate', () => {
+      this.groupStatus = this.profileEditorProvider.currentUserDetail.group;
+      if ( this.groupStatus  == null ||  this.groupStatus  == "") {
+        this.noGroupFlag = true;
+        this.gotGroupFlag=false;
+      }
+      else {
+        this.groupId =  this.groupStatus ;
+        this.gotGroupFlag = true;
+        this.noGroupFlag = false;
+        this.singleGroupDetail = {} as GroupInterface;
+        this.events.subscribe('singleGroupDetail', () => {
+          if (this.groupManagerProvider.singleGroupDetail != null) {
+            this.singleGroupDetail = this.groupManagerProvider.singleGroupDetail;
+          }
+        });
+      }
+    });
     this.events.subscribe('newGameStart', () => {
       if (this.gameStatusProvider.gameStartTime != null && this.gameStatusProvider.gameStartTime != "") {
         this.gameStartFlag = true;
@@ -43,23 +61,7 @@ export class ChatPage {
       else {
         this.gameEndFlag = false;
       }
-    })
-
-    var groupStatus = this.profileEditorProvider.currentUserDetail.group;
-    if (groupStatus == null || groupStatus == "") {
-      this.noGroupFlag = true;
-    }
-    else {
-      this.groupId = groupStatus;
-      this.gotGroupFlag = true;
-      this.singleGroupDetail = {} as GroupInterface;
-      this.events.subscribe('singleGroupDetail', () => {
-        if (this.groupManagerProvider.singleGroupDetail != null) {
-          this.singleGroupDetail = this.groupManagerProvider.singleGroupDetail;
-        }
-      });
-    }
-
+    });
   }
 
   ionViewWillEnter() {
@@ -68,6 +70,7 @@ export class ChatPage {
     }
     this.gameStatusProvider.gameStartListener();
     this.gameStatusProvider.gameEndListener();
+    this.profileEditorProvider.checkExistenceConcurrently();
   }
 
   joinGroup() {

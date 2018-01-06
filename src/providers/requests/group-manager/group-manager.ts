@@ -25,13 +25,14 @@ export class GroupManagerProvider {
   }
 
   setGroupIdByTimeStamp() {
-    this.groupId = (new Date()).getTime() + "";
+   return (new Date()).getTime() + "";
   }
 
-  updateGroupProfile(groupTemp: GroupInterface) {
+  updateGroupProfile(groupId,groupTemp: GroupInterface) {
     var promise = new Promise((resolve, reject) => {
-      this.fireDataBase.child(this.groupId).set(groupTemp).then(() => {
+      this.fireDataBase.child(groupId).set(groupTemp).then(() => {
         resolve({success: true});
+        console.log("successProfile")
       }).catch((err) => {
         reject(err);
       })
@@ -39,11 +40,11 @@ export class GroupManagerProvider {
     return promise;
   }
 
-  updateGroupMember(memberId) {
+  updateGroupMember(groupId,memberId) {
     var promise = new Promise((resolve, reject) => {
-      this.fireDataBase.child(this.groupId).child('member').push(memberId).then(() => {
+      this.fireDataBase.child(groupId).child('member').push(memberId).then(() => {
         resolve({success: true});
-      })
+      });
     });
     return promise;
   }
