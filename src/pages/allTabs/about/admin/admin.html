@@ -38,5 +38,14 @@
         </div>
       </div>
     </ion-item>
+    <ion-item>
+      <div *ngIf="gameEndFlag||gameInProgress" class="row">
+        <div class="col">
+          <div class="text-center">
+            <h5 style="text-align: center;">Game time used: {{timerString}}</h5>
+          </div>
+        </div>
+      </div>
+    </ion-item>
   </ion-list>
 </ion-content>

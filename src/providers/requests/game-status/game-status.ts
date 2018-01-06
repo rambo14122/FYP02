@@ -28,9 +28,10 @@ export class GameStatusProvider {
     return promise;
   }
 
+
   gameEnd() {
     var promise = new Promise((resolve, reject) => {
-      this.fireDataBase.set({"end": this.getTimeStamp()}).then(() => {
+      this.fireDataBase.update({"end": this.getTimeStamp()}).then(() => {
         resolve({success: true});
       }).catch((err) => {
         reject(err);
