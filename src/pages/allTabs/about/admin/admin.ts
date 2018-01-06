@@ -24,7 +24,6 @@ export class AdminPage {
   gameEndTime: string;
   timer: any;
   timerInterval: any;
-  timerString: string;
 
   constructor(public toastHandlerProvider: ToastHandlerProvider, public events: Events, public gameStatusProvider: GameStatusProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.gameInProgress = false;
@@ -40,7 +39,6 @@ export class AdminPage {
 
         this.timerInterval = setInterval(() => {
           this.timer += 1000;
-          this.timerString = this.msToTime(this.timer);
         }, 1000);
       }
       else {
@@ -61,12 +59,7 @@ export class AdminPage {
     })
   }
 
-  msToTime(duration) {
-    var seconds = Math.floor((duration / 1000) % 60);
-    var minutes = Math.floor((duration / (1000 * 60)) % 60);
-    var hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
-    return ((hours < 10) ? "0" + hours : hours) + ":" + ((minutes < 10) ? "0" + minutes : minutes) + ":" + ((seconds < 10) ? "0" + seconds : seconds);
-  }
+
 
   editGame() {
     this.navCtrl.push("EditGamePage");

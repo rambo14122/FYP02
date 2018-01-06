@@ -22,7 +22,6 @@ export class GamePage {
   gameEndTime: string;
   timer: any;
   timerInterval: any;
-  timerString: string;
 
   constructor(public gameStatusProvider: GameStatusProvider, public events: Events, public groupManagerProvider: GroupManagerProvider, public toastHandlerProvider: ToastHandlerProvider, public profileEditorProvider: ProfileEditorProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.gameInProgress = false;
@@ -38,7 +37,6 @@ export class GamePage {
 
         this.timerInterval = setInterval(() => {
           this.timer += 1000;
-          this.timerString = this.msToTime(this.timer);
         }, 1000);
       }
       else {
@@ -59,13 +57,8 @@ export class GamePage {
     })
   }
 
-  msToTime(duration) {
-    var seconds = Math.floor((duration / 1000) % 60);
-    var minutes = Math.floor((duration / (1000 * 60)) % 60);
-    var hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
-    return ((hours < 10) ? "0" + hours : hours) + ":" + ((minutes < 10) ? "0" + minutes : minutes) + ":" + ((seconds < 10) ? "0" + seconds : seconds);
-  }
-  
+
+
   joinGroup() {
     this.navCtrl.push("JoinGroupPage");
   }

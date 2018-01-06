@@ -42,7 +42,7 @@
       <div *ngIf="gameEndFlag||gameInProgress" class="row">
         <div class="col">
           <div class="text-center">
-            <h5 style="text-align: center;">Game time used: {{timerString}}</h5>
+            <h5 style="text-align: center;">Game time used: {{timer|date:'HH:mm:ss':'UTC'}}</h5>
           </div>
         </div>
       </div>
