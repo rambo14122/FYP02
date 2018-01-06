@@ -25,6 +25,7 @@ import { GameManagerProvider } from '../providers/requests/game-manager/game-man
 import { Keyboard } from '@ionic-native/keyboard';
 import { GroupManagerProvider } from '../providers/requests/group-manager/group-manager';
 import { Device } from '@ionic-native/device';
+import { GameStatusProvider } from '../providers/requests/game-status/game-status';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { Device } from '@ionic-native/device';
     GameManagerProvider,
     Keyboard,
     GroupManagerProvider,
-    Device
+    Device,
+    GameStatusProvider
   ]
 })
 export class AppModule {}

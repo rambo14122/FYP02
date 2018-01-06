@@ -9,20 +9,34 @@
 
 <ion-content padding>
   <ion-list>
-    <ion-item (click)="editGame()">
-      Edit game
+    <ion-item>
+      <button ion-button block (click)="editGame()"> Edit game</button>
     </ion-item>
-    <ion-item (click)="manageGroup()">
-      Manage group
+    <ion-item>
+      <button ion-button block (click)="manageGroup()"> Manage group</button>
     </ion-item>
-    <ion-item (click)="manageUser()">
-      Manage user
+    <ion-item>
+      <button ion-button block (click)="manageUser()"> Manage user</button>
     </ion-item>
-    <ion-item (click)="gameStart()">
-      Game start
+    <ion-item>
+      <button *ngIf="!gameInProgress" ion-button block (click)="gameStart()"> Game start</button>
+      <div *ngIf="gameInProgress" class="row">
+        <div class="col">
+          <div class="text-center">
+            <h5 style="text-align: center;">Game started at{{gameStartTime| date:'HH:mm ,dd MMM'}}</h5>
+          </div>
+        </div>
+      </div>
     </ion-item>
-    <ion-item (click)="gameEnd()">
-      Game end
+    <ion-item>
+      <button *ngIf="gameInProgress" ion-button block (click)="gameEnd()"> Game end</button>
+      <div *ngIf="gameEndFlag" class="row">
+        <div class="col">
+          <div class="text-center">
+            <h5 style="text-align: center;">Game ended at {{gameEndTime|date:'HH:mm ,dd MMM'}}</h5>
+          </div>
+        </div>
+      </div>
     </ion-item>
   </ion-list>
 </ion-content>

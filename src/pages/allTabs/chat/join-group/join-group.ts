@@ -28,7 +28,7 @@ export class JoinGroupPage {
         this.groupDetailKeys = Object.keys(this.groupDetails);
         for (let key of this.groupDetailKeys) {
           if (this.groupDetails[key]['member'] != null) {
-            this.memberNumber[key] = (Object.keys(this.groupDetails[key]['member']).length); 
+            this.memberNumber[key] = (Object.keys(this.groupDetails[key]['member']).length);
           }
 
         }

@@ -18,17 +18,22 @@ export class GameManagerProvider {
   constructor(public events: Events) {
   }
 
+  getGameDetail()
+  {
+    this.fireDataBase.on('value', (snapshot) => {
+      this.gameDetails = snapshot.val();
+      this.events.publish('newGameDetails');
+    });
+  }
   getPuzzleDetail()
   {
     this.fireDataBase.child('PuzzleTable').on('value', (snapshot) => {
-      console.log("changes puzzle detail");
       this.puzzleDetails = snapshot.val();
       this.events.publish('newPuzzleDetails');
     });
   }
   getLocationDetail() {
     this.fireDataBase.child('LocationTable').on('value', (snapshot) => {
-      console.log("changes location detail");
       this.locationDetails = snapshot.val();
       this.events.publish('newLocationDetails');
     });
@@ -89,14 +94,5 @@ export class GameManagerProvider {
     });
     return promise;
   }
-
-  gameStart() {
-
-  }
-
-  gameEnd() {
-
-  }
-
 
 }
