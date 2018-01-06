@@ -11,7 +11,7 @@ export class GroupManagerProvider {
   groupImageDefault = "https://firebasestorage.googleapis.com/v0/b/fyp02-baa62.appspot.com/o/groupImageDefault.png?alt=media&token=9670abfa-da6e-4e52-a8b6-0bcf57b30f89";
   fireDataBase = firebase.database().ref('/GroupTable');
   groupDetails = {};
-  singleGroupDetail={} as GroupInterface;
+  singleGroupDetail = {} as GroupInterface
   groupId: string;
 
   constructor(public userLoginProvider: UserLoginProvider, public events: Events) {
@@ -51,7 +51,7 @@ export class GroupManagerProvider {
   getSingleGroupDetail(groupId) {
     this.fireDataBase.child(groupId).on('value', (snapshot) => {
       this.singleGroupDetail = snapshot.val();
-      this.events.publish('singleGroupDetails');
+      this.events.publish('singleGroupDetail');
     });
   }
 

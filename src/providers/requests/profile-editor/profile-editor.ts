@@ -8,6 +8,7 @@ export class ProfileEditorProvider {
 
   fireDataBase = firebase.database().ref('/UserTable');
   defaultImageUrl = 'https://firebasestorage.googleapis.com/v0/b/myapp-4eadd.appspot.com/o/chatterplace.png?alt=media&token=e51fa887-bfc6-48ff-87c6-e2c61976534e'
+  currentUserDetail = {} as UserInterface;
 
   constructor(public userLoginProvider: UserLoginProvider) {
   }
@@ -15,15 +16,18 @@ export class ProfileEditorProvider {
   checkExistence() {
     var promise = new Promise((resolve, reject) => {
       this.fireDataBase.child(this.userLoginProvider.getCurrentUserUid()).once('value', (snapshot) => {
+        this.currentUserDetail = snapshot.val();
         resolve(snapshot.val());
       })
     });
     return promise;
   }
-  updatePersonalGroupStatus(groupIdTemp,memberId) {
+
+  updatePersonalGroupStatus(groupIdTemp, memberId) {
     var promise = new Promise((resolve, reject) => {
       this.fireDataBase.child(memberId).update({"group": groupIdTemp}).then(() => {
         resolve({success: true});
+        this.currentUserDetail.group = groupIdTemp;
       }).catch((err) => {
         reject(err);
       })

@@ -8,5 +8,8 @@
 
 
 <ion-content padding>
-
+  <div *ngIf="groupStatus==''"><p>You have to join a group first</p>
+    <button ion-button block color="danger" (click)="joinGroup()">Join Group</button>
+  </div>
+  <div *ngIf="groupStatus!=''&&groupStatus!=null">Welcome</div>
 </ion-content>

@@ -14,7 +14,7 @@ import {LoaderHandlerProvider} from '../../../../providers/utility/loader-handle
 export class JoinGroupPage {
 
   groupDetails: any;
-  groupDetailKeys:any = [];
+  groupDetailKeys: any = [];
   noGroupFlag: boolean;
   memberNumber: any = [];
 
@@ -22,11 +22,15 @@ export class JoinGroupPage {
     this.noGroupFlag = true;
     this.memberNumber = [];
     this.events.subscribe('newGroupDetails', () => {
+      console.log(this.groupManagerProvider.groupDetails);
       if (this.groupManagerProvider.groupDetails != null) {
         this.groupDetails = this.groupManagerProvider.groupDetails;
         this.groupDetailKeys = Object.keys(this.groupDetails);
         for (let key of this.groupDetailKeys) {
-          this.memberNumber[key]=(Object.keys(this.groupDetails[key]['member']).length);
+          if (this.groupDetails[key]['member'] != null) {
+            this.memberNumber[key] = (Object.keys(this.groupDetails[key]['member']).length); 
+          }
+
         }
       }
     });

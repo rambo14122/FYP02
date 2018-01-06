@@ -10,31 +10,36 @@ import {GroupInterface} from '../../../../platforms/android/build/intermediates/
   templateUrl: 'chat.html',
 })
 export class ChatPage {
-  noGroupFlag = true;
+  noGroupFlag = false;
+  gotGroupFlag = false;
   groupId: string;
   singGroupDetail = {} as GroupInterface;
 
   constructor(public events: Events, public groupManagerProvider: GroupManagerProvider, public profileEditorProvider: ProfileEditorProvider, public navCtrl: NavController, public navParams: NavParams) {
-    this.noGroupFlag = true;
-    this.profileEditorProvider.checkExistence().then((res: any) => {
-      if (res.group == null || res.group == "") {
-        this.noGroupFlag = true;
-      }
-      else {
-        this.groupId = res.group;
-        this.noGroupFlag = false;
-        // this.singGroupDetail = {} as GroupInterface;
-        // this.groupManagerProvider.getGroupDetails();
-        // this.events.subscribe('singleGroupDetail', () => {
-        //   if (this.groupManagerProvider.singleGroupDetail != null) {
-        //     this.singGroupDetail = this.groupManagerProvider.singleGroupDetail;
-        //     console.log(this.singGroupDetail);
-        //   }
-        // });
-      }
-    }).catch(() => {
+    this.noGroupFlag = false;
+    this.gotGroupFlag = false;
+    var groupStatus = this.profileEditorProvider.currentUserDetail.group;
+    if (groupStatus == null || groupStatus == "") {
+      this.noGroupFlag = true;
+    }
+    else {
+      this.groupId = groupStatus;
+      this.gotGroupFlag = true;
+      this.singGroupDetail = {} as GroupInterface;
+      this.events.subscribe('singleGroupDetail', () => {
+        if (this.groupManagerProvider.singleGroupDetail != null) {
+          this.singGroupDetail = this.groupManagerProvider.singleGroupDetail;
+        }
+      });
+    }
 
-    });
+  }
+
+  ionViewWillEnter() {
+    if (this.groupId != null) {
+      this.groupManagerProvider.getSingleGroupDetail(this.groupId);
+    }
+
   }
 
   joinGroup() {
