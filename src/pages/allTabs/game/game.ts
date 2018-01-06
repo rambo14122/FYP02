@@ -3,8 +3,11 @@ import {Events, IonicPage, NavController, NavParams} from 'ionic-angular';
 import {ProfileEditorProvider} from '../../../providers/requests/profile-editor/profile-editor';
 import {ToastHandlerProvider} from '../../../providers/utility/toast-handler/toast-handler';
 import {GroupManagerProvider} from '../../../providers/requests/group-manager/group-manager';
-import {GroupInterface} from '../../../../platforms/android/build/intermediates/assets/debug/www/assets/models/interfaces/GroupInterface';
 import {GameStatusProvider} from '../../../providers/requests/game-status/game-status';
+import {GameManagerProvider} from '../../../providers/requests/game-manager/game-manager';
+import {PuzzleStatus} from '../../../assets/models/interfaces/PuzzleStatus';
+import {PuzzleInterface} from '../../../assets/models/interfaces/PuzzleInterface';
+
 
 
 @IonicPage()
@@ -22,12 +25,28 @@ export class GamePage {
   gameEndTime: string;
   timer: any;
   timerInterval: any;
+  puzzleDetails: {};
+  puzzleStatus: {};
+  gameFinishFlag = false;
+  puzzleStatusDetails = [];
+  puzzleIds = [];
+  puzzleStatusTemp = {} as PuzzleStatus;
+  puzzleDetailArray = [];
+  point = 0;
+  firstUnsolvedId: string;
+  firstUnsolvedFlag = true;
 
-  constructor(public gameStatusProvider: GameStatusProvider, public events: Events, public groupManagerProvider: GroupManagerProvider, public toastHandlerProvider: ToastHandlerProvider, public profileEditorProvider: ProfileEditorProvider, public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public gameManagerProvider: GameManagerProvider, public gameStatusProvider: GameStatusProvider, public events: Events, public groupManagerProvider: GroupManagerProvider, public toastHandlerProvider: ToastHandlerProvider, public profileEditorProvider: ProfileEditorProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.gameInProgress = false;
+    this.point = 0;
     this.gameEndFlag = false;
     this.gameStartFlag = false;
-    this.groupStatus="";
+    this.gameFinishFlag = false;
+    this.puzzleStatusDetails = [];
+    this.groupStatus = "";
+    this.firstUnsolvedId = "";
+    this.firstUnsolvedFlag = true;
+    this.profileEditorProvider.setUid();
     this.events.subscribe('userProfileUpdate', () => {
       this.groupStatus = this.profileEditorProvider.currentUserDetail.group;
     });
@@ -58,8 +77,48 @@ export class GamePage {
         this.gameEndFlag = false;
       }
     });
+
     this.events.subscribe('gameStatusByGroup', () => {
-      console.log(this.gameStatusProvider.gameStatusByGroup);
+      this.puzzleStatus = this.gameStatusProvider.gameStatusByGroup;
+      console.log("status:", this.puzzleStatus);
+      if (this.puzzleStatus['finishTime'] != "" && this.puzzleStatus['finishTime'] != null) {
+        this.gameFinishFlag = true;
+      }
+      else {
+        this.gameFinishFlag = false;
+        this.puzzleStatusDetails = [];
+        this.puzzleIds = Object.keys(this.puzzleStatus['puzzles']);
+        this.point = this.puzzleStatus['point'];
+        for (let puzzleId of this.puzzleIds) {
+          this.puzzleStatusTemp = this.puzzleStatus['puzzles'][puzzleId];
+          if (this.firstUnsolvedFlag && this.puzzleStatusTemp.solved == false) {
+            this.firstUnsolvedFlag = false;
+            this.firstUnsolvedId = puzzleId;
+          }
+          this.puzzleStatusDetails[puzzleId] = this.puzzleStatusTemp;
+        }
+        this.puzzleStatusDetails.sort(((a, b) => {
+          if (a.order < b.order)
+            return -1;
+          if (a.order > b.order)
+            return 1;
+          return 0;
+        }));
+        this.puzzleIds = Object.keys(this.puzzleStatusDetails);
+        if (this.puzzleDetails != null) {
+          var locationIds = Object.keys(this.puzzleDetails);
+          for (let locationId of locationIds) {
+            var puzzleMap = this.puzzleDetails[locationId];
+            var puzzleMapIds = Object.keys(puzzleMap);
+            for (let puzzleId of puzzleMapIds) {
+              var puzzleDetailTemp = {} as PuzzleInterface;
+              puzzleDetailTemp = puzzleMap[puzzleId];
+              this.puzzleDetailArray[puzzleId] = puzzleDetailTemp;
+            }
+            console.log("details", this.puzzleDetailArray);
+          }
+        }
+      }
     });
   }
 
@@ -72,9 +131,17 @@ export class GamePage {
     this.gameStatusProvider.gameStartListener();
     this.gameStatusProvider.gameEndListener();
     if (this.groupStatus != null && this.groupStatus != '') {
-      console.log("test:",this.groupStatus);
-      this.gameStatusProvider.gameStatusListenerByGroup(this.groupStatus);
+      this.gameManagerProvider.getPuzzleDetailOnce().then((res) => {
+        this.puzzleDetails = res;
+        this.gameStatusProvider.gameStatusListenerByGroup(this.groupStatus);
+      }).catch(() => {
+      });
+
     }
+  }
+
+  solveThePuzzle(puzzleId) {
+    this.navCtrl.push("SolvePuzzlePage", {"PuzzleId":puzzleId,"PuzzleDetails": this.puzzleDetailArray});
   }
 
 }

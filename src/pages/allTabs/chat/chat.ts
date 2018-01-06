@@ -18,21 +18,23 @@ export class ChatPage {
   gameInProgress = false;
   gameEndFlag = false;
   gameStartFlag = false;
-  groupStatus:string;
+  groupStatus: string;
+
   constructor(public gameStatusProvider: GameStatusProvider, public events: Events, public groupManagerProvider: GroupManagerProvider, public profileEditorProvider: ProfileEditorProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.noGroupFlag = false;
     this.gotGroupFlag = false;
     this.gameInProgress = false;
     this.gameEndFlag = false;
     this.gameStartFlag = false;
+    this.profileEditorProvider.setUid();
     this.events.subscribe('userProfileUpdate', () => {
       this.groupStatus = this.profileEditorProvider.currentUserDetail.group;
-      if ( this.groupStatus  == null ||  this.groupStatus  == "") {
+      if (this.groupStatus == null || this.groupStatus == "") {
         this.noGroupFlag = true;
-        this.gotGroupFlag=false;
+        this.gotGroupFlag = false;
       }
       else {
-        this.groupId =  this.groupStatus ;
+        this.groupId = this.groupStatus;
         this.gotGroupFlag = true;
         this.noGroupFlag = false;
         this.singleGroupDetail = {} as GroupInterface;

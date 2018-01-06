@@ -8,6 +8,7 @@ export class GameStatusProvider {
   gameStartTime: string;
   gameEndTime: string;
   gameStatusByGroup = {};
+  gameStatusByPuzzle = {};
 
   constructor(public events: Events) {
     this.gameStartTime = "";
@@ -58,12 +59,13 @@ export class GameStatusProvider {
     });
   }
 
-  // gameStatusListenerByPuzzle(groupId, puzzleId) {
-  //   this.fireDataBase.child('GroupTable').child(groupId).child(puzzleId).on('value', (snapshot) => {
-  //     this.gameStartTime = snapshot.val();
-  //     this.events.publish('gameStatusByPuzzle');
-  //   });
-  // }
+  gameStatusListenerPuzzle(groupId, puzzleId) {
+    this.fireDataBase.child('GroupTable').child(groupId).child('puzzles').child('puzzleId').on('value', (snapshot) => {
+      this.gameStatusByPuzzle = snapshot.val();
+      this.events.publish('gameStatusByPuzzle');
+    });
+  }
+
 
   gameEndListener() {
     this.fireDataBase.child('end').on('value', (snapshot) => {

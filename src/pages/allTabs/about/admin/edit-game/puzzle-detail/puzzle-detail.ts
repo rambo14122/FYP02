@@ -39,7 +39,7 @@ export class PuzzleDetailPage {
             this.puzzleIds = Object.keys(this.gameDetails[this.locationId]);
             for (let puzzleId of this.puzzleIds) {
               this.puzzleTempForDisplay = this.gameDetails[this.locationId][puzzleId];
-              this.puzzleDetails[puzzleId] = (this.puzzleTempForDisplay);
+              this.puzzleDetails[puzzleId] = this.puzzleTempForDisplay;
             }
             this.puzzleDetails.sort(((a, b) => {
               if (a.order < b.order)

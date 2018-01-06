@@ -17,6 +17,29 @@
   <div *ngIf="gameInProgress">
     <div *ngIf="groupStatus==''"><p>Game has already started, you can not join group now, follow others and enjoy!</p>
     </div>
-    <div *ngIf="groupStatus!=''&&groupStatus!=null">Lets solve the puzzles!</div>
+    <div *ngIf="groupStatus!=''&&groupStatus!=null">
+      <h5 style="text-align: center;">Lets solve the puzzles!</h5>
+      <h5 style="text-align: center;">Time used: {{timer|date:'HH:mm:ss':'UTC'}}</h5>
+      <h5 style="text-align: center;">Point: {{point}}</h5>
+      <ion-list>
+        <ion-item-group *ngFor="let puzzleId of puzzleIds">
+          <ion-item *ngIf="puzzleStatusDetails[puzzleId].solved==true">
+            <ion-thumbnail item-start>
+              <img src={{puzzleDetailArray[puzzleId].photoUrl}}>
+            </ion-thumbnail>
+            <h2> {{puzzleDetails[puzzleId].title}}</h2>
+            {{puzzleDetailArray[puzzleId].title}}
+            <p>Solved by:</p>
+          </ion-item>
+        </ion-item-group>
+        <ion-item *ngIf="firstUnsolvedId" color="hcolor" (click)="solveThePuzzle(firstUnsolvedId)">
+          <ion-thumbnail item-start>
+            <img src={{puzzleDetailArray[firstUnsolvedId].photoUrl}}>
+          </ion-thumbnail>
+          <h2>{{puzzleDetailArray[firstUnsolvedId].title}}</h2>
+          <p>To be solved</p>
+        </ion-item>
+      </ion-list>
+    </div>
   </div>
 </ion-content>
