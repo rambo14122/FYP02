@@ -21,6 +21,7 @@ export class MyApp {
       storage.get("currentUserUid").then((val) => {
         if (val) {
           this.userLoginProvider.anonymousLogin().then((res: any) => {
+            this.profileEditorProvider.setUid();
             this.profileEditorProvider.checkExistence().then((res: any) => {
               if (res == null) {
                 this.rootPage = "LoginPage";

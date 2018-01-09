@@ -5,60 +5,70 @@
   </ion-navbar>
 
 </ion-header>
-<ion-content padding>
-  <ion-item>
-    <div class="row">
-      <div class="col">
-        <div class="text-center">
-          <h2 style="text-align: center;">{{puzzleDetail.title}}</h2>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <div class="text-center">
-          <h5 style="text-align: center;">{{puzzleDetail.puzzleContent}}</h5>
-        </div>
-      </div>
-    </div>
+<ion-content>
 
-    <div class="row">
-      <div class="col">
-        <div class="text-center">
-          <img src={{puzzleDetail.photoUrl}}>
+  <div padding>
+    <ion-item>
+      <div class="row">
+        <div class="col">
+          <div class="text-center">
+            <h2 style="text-align: center;">{{puzzleDetail.title}}</h2>
+          </div>
         </div>
       </div>
-    </div>
-  </ion-item>
-  <div class="spacer" style="height: 10px;"></div>
-  <button *ngIf="puzzleStatus['hint1']!=true" ion-button block color="danger" (click)="revealHint('hint1')">Hint1 -20
-    points
-  </button>
-  <ion-item *ngIf="puzzleStatus['hint1']">
-    <div class="row">
-      <div class="col">
-        <div class="text-center">
-          <h5 style="text-align: left;">Hint1:{{puzzleDetail.hint1}}</h5>
+      <div class="row">
+        <div class="col">
+          <div class="text-center">
+            <h5 style="text-align: center;">{{puzzleDetail.puzzleContent}}</h5>
+          </div>
         </div>
       </div>
-    </div>
-  </ion-item>
-  <div class="spacer" style="height: 10px;"></div>
-  <button *ngIf="puzzleStatus['hint2']!=true &&puzzleStatus['hint1']==true" ion-button block color="danger"
-          (click)="revealHint('hint2')">Hint2 -20 points
-  </button>
-  <ion-item *ngIf="puzzleStatus['hint2']">
-    <div class="row">
-      <div class="col">
-        <div class="text-center">
-          <h5 style="text-align: left;">Hint2:{{puzzleDetail.hint2}}</h5>
+
+      <div class="row">
+        <div class="col">
+          <div class="text-center">
+            <img src={{puzzleDetail.photoUrl}}>
+          </div>
         </div>
       </div>
+    </ion-item>
+    <div class="spacer" style="height: 10px;"></div>
+    <button *ngIf="puzzleStatus['hint1']!=true&&(!puzzleStatus['solved'])" ion-button block color="danger"
+            (click)="revealHint('hint1')">Hint1 -20
+      points
+    </button>
+    <ion-item *ngIf="puzzleStatus['hint1']">
+      <div class="row">
+        <div class="col">
+          <div class="text-center">
+            <h5 style="text-align: left;">Hint 1:{{puzzleDetail.hint1}}</h5>
+          </div>
+        </div>
+      </div>
+    </ion-item>
+    <div class="spacer" style="height: 10px;"></div>
+    <button *ngIf="puzzleStatus['hint2']!=true &&puzzleStatus['hint1']==true&&(!puzzleStatus['solved'])" ion-button
+            block color="danger"
+            (click)="revealHint('hint2')">Hint2 -20 points
+    </button>
+    <ion-item *ngIf="puzzleStatus['hint2']">
+      <div class="row">
+        <div class="col">
+          <div class="text-center">
+            <h5 style="text-align: left;">Hint 2:{{puzzleDetail.hint2}}</h5>
+          </div>
+        </div>
+      </div>
+    </ion-item>
+    <div class="spacer" style="height: 10px;"></div>
+    <div *ngIf="!puzzleStatus['solved']">
+      <ion-item>
+        <ion-label floating>Your answer:</ion-label>
+        <ion-input type="text" placeholder="Your answer:"
+                   [(ngModel)]="answerTemp"></ion-input>
+      </ion-item>
+      <button ion-button block (click)="answerQuestion()">Answer Question +10</button>
     </div>
-  </ion-item>
-  <div class="spacer" style="height: 10px;"></div>
-  <button ion-button block (click)="answerQuestion()">Answer Question +50</button>
-  <ion-item *ngIf="!puzzleStatus['solved']">
     <div *ngIf="puzzleStatus['solved']" class="row">
       <div class="col">
         <div class="text-center">
@@ -66,5 +76,19 @@
         </div>
       </div>
     </div>
-  </ion-item>
+  </div>
 </ion-content>
+<ion-footer>
+  <ion-toolbar color="hcolor">
+    <ion-grid style="color: white">
+      <ion-row style="text-align: center;">
+        <ion-col col-6>
+          Time used: {{timer|date:'HH:mm:ss':'UTC'}}
+        </ion-col>
+        <ion-col col-6>
+          Point: {{point}}
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

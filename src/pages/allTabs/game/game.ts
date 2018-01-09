@@ -142,7 +142,9 @@ export class GamePage {
     this.navCtrl.push("SolvePuzzlePage", {
       "GroupId": this.groupStatus,
       "PuzzleId": puzzleId,
-      "PuzzleDetail": this.puzzleDetailArray[puzzleId]
+      "PuzzleDetail": this.puzzleDetailArray[puzzleId],
+      "GameStartTime":this.gameStartTime,
+      "Point":this.point
     }).then(() => {
       this.firstUnsolvedId = "";
     });

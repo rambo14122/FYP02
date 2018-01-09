@@ -14,11 +14,24 @@ export class SolvePuzzlePage {
   puzzleDetail = {} as PuzzleInterface;
   groupStatus: string;
   puzzleStatus = {};
+  answerTemp: string;
+  gameStartTime: string;
+  timer: any;
+  point: number;
+  timerInterval: any;
 
   constructor(public toastHandlerProvider: ToastHandlerProvider, public events: Events, public gameStatusProvider: GameStatusProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.puzzleToSolveId = this.navParams.get("PuzzleId");
     this.puzzleDetail = this.navParams.get("PuzzleDetail");
     this.groupStatus = this.navParams.get("GroupId");
+    this.gameStartTime = this.navParams.get("GameStartTime");
+    this.point = this.navParams.get("Point");
+    this.answerTemp = "";
+    this.timer = parseInt(this.gameStatusProvider.getTimeStamp()) - parseInt(this.gameStartTime);
+    clearInterval(this.timerInterval);
+    this.timerInterval = setInterval(() => {
+      this.timer += 1000;
+    }, 1000);
     this.events.subscribe('gameStatusByPuzzle', () => {
       if (this.gameStatusProvider.gameStatusByPuzzle != null) {
         this.puzzleStatus = this.gameStatusProvider.gameStatusByPuzzle;
@@ -44,7 +57,7 @@ export class SolvePuzzlePage {
   }
 
   answerQuestion() {
-    var answer = "";
+    var answer = this.answerTemp;
     if (this.puzzleStatus['strict']) {
       if (answer != this.puzzleDetail.answer) {
         this.toastHandlerProvider.presentToast("Wrong answer");
@@ -52,13 +65,13 @@ export class SolvePuzzlePage {
       }
     }
     else {
-      if (answer.trim().indexOf(this.puzzleDetail.answer.trim()) < 0 && this.puzzleDetail.answer.trim().indexOf(answer.trim()) < 0) {
+      if (answer.length < 0.8 * this.puzzleDetail.answer.length && answer.trim().toLowerCase().indexOf(this.puzzleDetail.answer.trim()) < 0 && this.puzzleDetail.answer.trim().toLowerCase().indexOf(answer.trim()) < 0) {
         this.toastHandlerProvider.presentToast("Wrong answer");
         return;
       }
     }
     this.gameStatusProvider.uploadCorrectAnswer(this.groupStatus, this.puzzleToSolveId).then(() => {
-      this.toastHandlerProvider.presentToast("Corrent answer!");
+      this.toastHandlerProvider.presentToast("Correct answer!");
       if (this.navCtrl.canGoBack()) {
         this.navCtrl.pop();
       }
