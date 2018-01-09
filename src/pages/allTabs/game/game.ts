@@ -14,6 +14,7 @@ import {PuzzleInterface} from '../../../assets/models/interfaces/PuzzleInterface
   selector: 'page-game',
   templateUrl: 'game.html',
 })
+
 export class GamePage {
   groupStatus: string;
   groupLeaderFlag = false;
@@ -85,6 +86,13 @@ export class GamePage {
         this.gameFinishFlag = false;
         this.puzzleStatusDetails = [];
         this.puzzleIds = Object.keys(this.puzzleStatus['puzzles']);
+        this.puzzleIds.sort(((a, b): number => {
+          if (this.puzzleStatus['puzzles'][a].order < this.puzzleStatus['puzzles'][b].order)
+            return -1;
+          if (this.puzzleStatus['puzzles'][a].order > this.puzzleStatus['puzzles'][b].order)
+            return 1;
+          return 0;
+        }));
         this.point = this.puzzleStatus['point'];
         for (let puzzleId of this.puzzleIds) {
           this.puzzleStatusTemp = this.puzzleStatus['puzzles'][puzzleId];
@@ -93,14 +101,6 @@ export class GamePage {
           }
           this.puzzleStatusDetails[puzzleId] = this.puzzleStatusTemp;
         }
-        this.puzzleStatusDetails.sort(((a, b) => {
-          if (a.order < b.order)
-            return -1;
-          if (a.order > b.order)
-            return 1;
-          return 0;
-        }));
-        this.puzzleIds = Object.keys(this.puzzleStatusDetails);
         if (this.puzzleDetails != null) {
           var locationIds = Object.keys(this.puzzleDetails);
           for (let locationId of locationIds) {

@@ -138,7 +138,7 @@ export class AdminPage {
       }
       groupStatus.finishTime = "";
       groupStatus.puzzles = allPuzzles;
-      groupStatus.point=0;
+      groupStatus.point = 0;
       finalMapToSet[groupId] = groupStatus;
     }
 

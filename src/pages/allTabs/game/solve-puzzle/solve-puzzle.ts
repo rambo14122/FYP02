@@ -59,7 +59,9 @@ export class SolvePuzzlePage {
     }
     this.gameStatusProvider.uploadCorrectAnswer(this.groupStatus, this.puzzleToSolveId).then(() => {
       this.toastHandlerProvider.presentToast("Corrent answer!");
-      this.navCtrl.pop();
+      if (this.navCtrl.canGoBack()) {
+        this.navCtrl.pop();
+      }
     }).catch(() => {
     });
   }

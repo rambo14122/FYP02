@@ -80,7 +80,7 @@ export class ChatPage {
   }
 
   changeGroup() {
-
+    this.navCtrl.push("JoinGroupPage");
   }
 
 }

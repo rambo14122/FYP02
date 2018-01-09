@@ -15,12 +15,18 @@ export class JoinGroupPage {
 
   groupDetails: any;
   groupDetailKeys: any = [];
-  noGroupFlag: boolean;
   memberNumber: any = [];
+  groupStatus: string;
 
   constructor(public loaderHandlerProvider: LoaderHandlerProvider, public userLoginProvider: UserLoginProvider, public profileEditorProvider: ProfileEditorProvider, public groupManagerProvider: GroupManagerProvider, public events: Events, public navCtrl: NavController, public navParams: NavParams) {
-    this.noGroupFlag = true;
     this.memberNumber = [];
+    this.groupStatus = "";
+    this.events.subscribe('userProfileUpdate', () => {
+      this.groupStatus = this.profileEditorProvider.currentUserDetail.group;
+      if (this.groupStatus == null || this.groupStatus == "") {
+      }
+    });
+
     this.events.subscribe('newGroupDetails', () => {
       console.log(this.groupManagerProvider.groupDetails);
       if (this.groupManagerProvider.groupDetails != null) {
@@ -40,10 +46,12 @@ export class JoinGroupPage {
 
   joinGroup(groupId) {
     this.loaderHandlerProvider.presentLoader("Joining Group");
-    this.groupManagerProvider.updateGroupMember(groupId,this.userLoginProvider.getCurrentUserUid()).then(() => {
+    this.groupManagerProvider.updateGroupMember(groupId, this.userLoginProvider.getCurrentUserUid()).then(() => {
       this.profileEditorProvider.updatePersonalGroupStatus(groupId, this.userLoginProvider.getCurrentUserUid()).then(() => {
         this.loaderHandlerProvider.dismissLoader();
-        this.navCtrl.pop();
+        if (this.navCtrl.canGoBack()) {
+          this.navCtrl.pop();
+        }
       }).catch(() => {
         this.loaderHandlerProvider.dismissLoader();
       });
@@ -57,8 +65,13 @@ export class JoinGroupPage {
 
   ionViewWillEnter() {
     this.groupManagerProvider.getGroupDetails();
+    this.profileEditorProvider.checkExistenceConcurrently();
   }
 
   ionViewDidLeave() {
+  }
+
+  quitGroup() {
+
   }
 }

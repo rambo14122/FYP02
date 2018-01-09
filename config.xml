@@ -80,6 +80,7 @@
     <allow-navigation href="http://192.168.0.169:8102" />
     <allow-navigation href="http://10.20.11.114:8100" />
     <allow-navigation href="http://172.20.10.2:8100" />
+    <allow-navigation href="http://10.27.219.123:8100" />
     <engine name="android" spec="6.3.0" />
     <engine name="ios" spec="4.5.4" />
     <plugin name="ionic-plugin-keyboard" spec="^2.2.1" />

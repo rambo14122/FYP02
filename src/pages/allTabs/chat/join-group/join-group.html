@@ -16,7 +16,9 @@
       <h2>{{groupDetails[keyTemp].name}}</h2>
       <p><i>Group created on: {{keyTemp| date:'HH:mm ,dd MMM'}}</i></p>
       <p>No.of user:{{memberNumber[keyTemp]}}/10</p>
-      <button *ngIf="memberNumber[keyTemp]!=10" ion-button clear item-end (click)="joinGroup(keyTemp)">Join</button>
+      <button *ngIf="memberNumber[keyTemp]!=10&&(groupStatus==null||groupStatus==''||groupStatus!=keyTemp)" ion-button clear item-end (click)="joinGroup(keyTemp)">Join</button>
+      <button *ngIf="(groupStatus!=null&&groupStatus!=''&&groupStatus==keyTemp)" color='danger' ion-button clear item-end (click)="quitGroup(keyTemp)">Quit</button>
+
     </ion-item>
   </ion-list>
   <button  ion-button block color="danger" (click)="createGroup()">Create Group</button>
