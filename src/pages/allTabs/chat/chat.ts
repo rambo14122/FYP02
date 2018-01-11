@@ -37,12 +37,15 @@ export class ChatPage {
         this.groupId = this.groupStatus;
         this.gotGroupFlag = true;
         this.noGroupFlag = false;
-        this.singleGroupDetail = {} as GroupInterface;
-        this.events.subscribe('singleGroupDetail', () => {
-          if (this.groupManagerProvider.singleGroupDetail != null) {
-            this.singleGroupDetail = this.groupManagerProvider.singleGroupDetail;
-          }
-        });
+
+      }
+    });
+
+    this.singleGroupDetail = {} as GroupInterface;
+    this.events.subscribe('singleGroupDetail', () => {
+      if (this.groupManagerProvider.singleGroupDetail != null) {
+        this.singleGroupDetail = this.groupManagerProvider.singleGroupDetail;
+        console.log("single group:", this.singleGroupDetail);
       }
     });
     this.events.subscribe('newGameStart', () => {
@@ -67,9 +70,7 @@ export class ChatPage {
   }
 
   ionViewWillEnter() {
-    if (this.groupId != null) {
-      this.groupManagerProvider.getSingleGroupDetail(this.groupId);
-    }
+    this.groupManagerProvider.getSingleGroupDetail(this.groupId);
     this.gameStatusProvider.gameStartListener();
     this.gameStatusProvider.gameEndListener();
     this.profileEditorProvider.checkExistenceConcurrently();

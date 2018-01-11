@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
-import {IonicPage, NavController, NavParams} from 'ionic-angular';
+import {Events, IonicPage, NavController, NavParams} from 'ionic-angular';
 import {Keyboard} from '@ionic-native/keyboard';
+import {ProfileEditorProvider} from '../../../providers/requests/profile-editor/profile-editor';
 
 
 @IonicPage()
@@ -14,7 +15,13 @@ export class TabPage {
   tab2: string = 'ChatPage';
   tab3: string = 'AboutPage';
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public events: Events, public profileEditorProvider: ProfileEditorProvider) {
+    this.events.subscribe("allUserProfile", () => {
+      console.log(this.profileEditorProvider.allUserDetail);
+    });
+  }
 
+  ionViewWillEnter() {
+    this.profileEditorProvider.getAllUserInfo();
   }
 }

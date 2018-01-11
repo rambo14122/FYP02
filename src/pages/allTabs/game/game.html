@@ -26,7 +26,13 @@
               <img src={{puzzleDetailArray[puzzleId].photoUrl}}>
             </ion-thumbnail>
             <h2> {{puzzleDetailArray[puzzleId].title}}</h2>
-            <p>Solved by:{{puzzleStatusDetails[puzzleId].solvedBy}}</p>
+            <ion-item class="innerItem">
+              <ion-avatar item-start>
+                <img src="{{profileEditorProvider.allUserDetail[puzzleStatusDetails[puzzleId].solvedBy]['photoUrl']}}">
+              </ion-avatar>
+              <p><i>solved by:</i></p>
+              <p><i>{{profileEditorProvider.allUserDetail[puzzleStatusDetails[puzzleId].solvedBy]['name']}}</i></p>
+            </ion-item>
           </ion-item>
         </ion-item-group>
         <ion-item class="unsolved" *ngIf="firstUnsolvedId" color="hcolor" (click)="solveThePuzzle(firstUnsolvedId)">

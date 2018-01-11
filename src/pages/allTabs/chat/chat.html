@@ -8,6 +8,12 @@
 <ion-content padding>
   <div *ngIf="gameEndFlag">
     <button *ngIf="noGroupFlag" ion-button block color="danger" (click)="joinGroup()">Join Group Now</button>
+    <ion-item  *ngIf="gotGroupFlag">
+      <ion-avatar item-start>
+        <img src={{singleGroupDetail.photoUrl}}>
+      </ion-avatar>
+      <h2>{{singleGroupDetail.name}}</h2>
+    </ion-item>
     <button *ngIf="gotGroupFlag" ion-button block color="danger" (click)="changeGroup()">Change Group</button>
   </div>
   <div *ngIf="gameInProgress">

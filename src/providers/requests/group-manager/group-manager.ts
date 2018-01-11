@@ -25,10 +25,10 @@ export class GroupManagerProvider {
   }
 
   setGroupIdByTimeStamp() {
-   return (new Date()).getTime() + "";
+    return (new Date()).getTime() + "";
   }
 
-  updateGroupProfile(groupId,groupTemp: GroupInterface) {
+  updateGroupProfile(groupId, groupTemp: GroupInterface) {
     var promise = new Promise((resolve, reject) => {
       this.fireDataBase.child(groupId).set(groupTemp).then(() => {
         resolve({success: true});
@@ -40,7 +40,7 @@ export class GroupManagerProvider {
     return promise;
   }
 
-  updateGroupMember(groupId,memberId) {
+  updateGroupMember(groupId, memberId) {
     var promise = new Promise((resolve, reject) => {
       this.fireDataBase.child(groupId).child('member').push(memberId).then(() => {
         resolve({success: true});
@@ -50,6 +50,8 @@ export class GroupManagerProvider {
   }
 
   getSingleGroupDetail(groupId) {
+    if (groupId == null || groupId == "")
+      return;
     this.fireDataBase.child(groupId).on('value', (snapshot) => {
       this.singleGroupDetail = snapshot.val();
       this.events.publish('singleGroupDetail');

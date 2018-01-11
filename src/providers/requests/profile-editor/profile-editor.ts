@@ -10,6 +10,7 @@ export class ProfileEditorProvider {
   fireDataBase = firebase.database().ref('/UserTable');
   defaultImageUrl = 'https://firebasestorage.googleapis.com/v0/b/myapp-4eadd.appspot.com/o/chatterplace.png?alt=media&token=e51fa887-bfc6-48ff-87c6-e2c61976534e'
   currentUserDetail = {} as UserInterface;
+  allUserDetail={};
   uid: string;
 
   constructor(public events: Events, public userLoginProvider: UserLoginProvider) {
@@ -34,6 +35,13 @@ export class ProfileEditorProvider {
     this.fireDataBase.child(this.uid).on('value', (snapshot) => {
       this.currentUserDetail = snapshot.val();
       this.events.publish("userProfileUpdate");
+    });
+  }
+
+  getAllUserInfo() {
+    this.fireDataBase.on('value', (snapshot) => {
+      this.allUserDetail = snapshot.val();
+      this.events.publish("allUserProfile");
     });
   }
 
