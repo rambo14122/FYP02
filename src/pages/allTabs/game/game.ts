@@ -7,6 +7,8 @@ import {GameStatusProvider} from '../../../providers/requests/game-status/game-s
 import {GameManagerProvider} from '../../../providers/requests/game-manager/game-manager';
 import {PuzzleStatus} from '../../../assets/models/interfaces/PuzzleStatus';
 import {PuzzleInterface} from '../../../assets/models/interfaces/PuzzleInterface';
+import {UserLoginProvider} from '../../../providers/login/user-login/user-login';
+import {GroupStatus} from '../../../assets/models/interfaces/GroupStatus';
 
 
 @IonicPage()
@@ -34,8 +36,10 @@ export class GamePage {
   puzzleDetailArray = [];
   point = 0;
   firstUnsolvedId: string;
+  groupStart = false;
+  gameDetails;
 
-  constructor(public gameManagerProvider: GameManagerProvider, public gameStatusProvider: GameStatusProvider, public events: Events, public groupManagerProvider: GroupManagerProvider, public toastHandlerProvider: ToastHandlerProvider, public profileEditorProvider: ProfileEditorProvider, public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public userLoginProvider: UserLoginProvider, public gameManagerProvider: GameManagerProvider, public gameStatusProvider: GameStatusProvider, public events: Events, public groupManagerProvider: GroupManagerProvider, public toastHandlerProvider: ToastHandlerProvider, public profileEditorProvider: ProfileEditorProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.gameInProgress = false;
     this.point = 0;
     this.gameEndFlag = false;
@@ -75,14 +79,31 @@ export class GamePage {
         this.gameEndFlag = false;
       }
     });
+    this.events.subscribe('singleGroupDetail', () => {
+      if (this.groupManagerProvider.singleGroupDetail != null) {
+        if (this.userLoginProvider.getCurrentUserUid() == this.groupManagerProvider.singleGroupDetail['groupCreator'])
+          this.groupLeaderFlag = true;
+      }
+    });
+    this.events.subscribe('newGameDetails', () => {
+      if (this.gameManagerProvider.gameDetails != null) {
+        this.gameDetails = this.gameManagerProvider.gameDetails;
+      }
+    })
 
     this.events.subscribe('gameStatusByGroup', () => {
       this.puzzleStatus = this.gameStatusProvider.gameStatusByGroup;
       console.log("status:", this.puzzleStatus);
+      if (this.puzzleStatus == null) {
+        this.groupStart = false;
+        return;
+      }
       if (this.puzzleStatus['finishTime'] != "" && this.puzzleStatus['finishTime'] != null) {
         this.gameFinishFlag = true;
+        this.gameManagerProvider.getGameDetail();
       }
       else {
+        this.groupStart = true;
         this.gameFinishFlag = false;
         this.puzzleStatusDetails = [];
         this.puzzleIds = Object.keys(this.puzzleStatus['puzzles']);
@@ -114,6 +135,7 @@ export class GamePage {
             console.log("details", this.puzzleDetailArray);
           }
         }
+
       }
     });
   }
@@ -131,10 +153,66 @@ export class GamePage {
       this.gameManagerProvider.getPuzzleDetailOnce().then((res) => {
         this.puzzleDetails = res;
         this.gameStatusProvider.gameStatusListenerByGroup(this.groupStatus);
+        this.groupManagerProvider.getSingleGroupDetail(this.groupStatus);
       }).catch(() => {
       });
 
     }
+  }
+
+  startGame() {
+    if (this.gameDetails == null) {
+      this.toastHandlerProvider.presentToast("Can not fetch game detail, try again later");
+      return;
+    }
+    var locationDetails = this.gameDetails['LocationTable'];
+    var puzzleDetails = this.gameDetails['PuzzleTable'];
+    var locationIds = Object.keys(locationDetails);
+    var finalMapToSet = [];
+    var locationOrder = [];
+    var puzzleOrder = 0;
+    var allPuzzles = [];
+    var groupStatus = {} as GroupStatus;
+    locationOrder.push(0);
+    var randomStartLocation = Math.ceil(Math.random() * (locationIds.length - 1));
+    locationOrder.push(randomStartLocation);
+    for (var i = 0; i < locationIds.length - 2; i++) {
+      randomStartLocation++;
+      if (randomStartLocation == locationIds.length) {
+        randomStartLocation = 1;
+      }
+      locationOrder.push(randomStartLocation);
+    }
+    for (var j = 0; j < locationOrder.length; j++) {
+      var locationIdTemp = "";
+      for (let locationId of locationIds) {
+        if (locationDetails[locationId]['order'] == locationOrder[j]) {
+          locationIdTemp = locationId;
+          break;
+        }
+      }
+      if (puzzleDetails[locationIdTemp] != null) {
+        var puzzleIds = Object.keys(puzzleDetails[locationIdTemp]);
+        for (let key of puzzleIds) {
+          var puzzleStatus = {} as PuzzleStatus;
+          puzzleStatus.hint1 = false;
+          puzzleStatus.hint2 = false;
+          puzzleStatus.order = puzzleOrder++;
+          puzzleStatus.solved = false;
+          puzzleStatus.solvedBy = "";
+          allPuzzles[key] = puzzleStatus;
+        }
+      }
+    }
+    groupStatus.finishTime = "";
+    groupStatus.puzzles = allPuzzles;
+    groupStatus.point = 50;
+    groupStatus.startTime = this.gameStatusProvider.getTimeStamp();
+    finalMapToSet[this.groupStatus] = groupStatus;
+    this.gameStatusProvider.initializeGroupPuzzles(finalMapToSet).then(() => {
+      this.toastHandlerProvider.presentToast("Game started");
+    }).catch(() => {
+    });
   }
 
   solveThePuzzle(puzzleId) {
@@ -143,8 +221,8 @@ export class GamePage {
       "GroupId": this.groupStatus,
       "PuzzleId": puzzleId,
       "PuzzleDetail": this.puzzleDetailArray[puzzleId],
-      "GameStartTime":this.gameStartTime,
-      "Point":this.point
+      "GameStartTime": this.gameStartTime,
+      "Point": this.point
     }).then(() => {
       this.firstUnsolvedId = "";
     });

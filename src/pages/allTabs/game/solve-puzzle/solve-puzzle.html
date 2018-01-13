@@ -64,7 +64,7 @@
     <div *ngIf="!puzzleStatus['solved']">
       <ion-item>
         <ion-label floating>Your answer:</ion-label>
-        <ion-input type="text" placeholder="Your answer:"
+        <ion-input type="text"
                    [(ngModel)]="answerTemp"></ion-input>
       </ion-item>
       <button ion-button block (click)="answerQuestion()">Answer Question +10</button>

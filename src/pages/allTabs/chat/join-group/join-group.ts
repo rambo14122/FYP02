@@ -71,7 +71,11 @@ export class JoinGroupPage {
   ionViewDidLeave() {
   }
 
-  quitGroup() {
+  quitGroup(groupId) {
+    this.groupManagerProvider.quitGroup(groupId, this.userLoginProvider.getCurrentUserUid()).then(() => {
 
+    }).catch(() => {
+
+    });
   }
 }

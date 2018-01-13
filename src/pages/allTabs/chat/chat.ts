@@ -28,6 +28,7 @@ export class ChatPage {
     this.gameStartFlag = false;
     this.profileEditorProvider.setUid();
     this.events.subscribe('userProfileUpdate', () => {
+      console.log(this.profileEditorProvider.currentUserDetail);
       this.groupStatus = this.profileEditorProvider.currentUserDetail.group;
       if (this.groupStatus == null || this.groupStatus == "") {
         this.noGroupFlag = true;
@@ -35,6 +36,7 @@ export class ChatPage {
       }
       else {
         this.groupId = this.groupStatus;
+        this.groupManagerProvider.getSingleGroupDetail(this.groupId);
         this.gotGroupFlag = true;
         this.noGroupFlag = false;
 
@@ -45,7 +47,6 @@ export class ChatPage {
     this.events.subscribe('singleGroupDetail', () => {
       if (this.groupManagerProvider.singleGroupDetail != null) {
         this.singleGroupDetail = this.groupManagerProvider.singleGroupDetail;
-        console.log("single group:", this.singleGroupDetail);
       }
     });
     this.events.subscribe('newGameStart', () => {
@@ -70,7 +71,6 @@ export class ChatPage {
   }
 
   ionViewWillEnter() {
-    this.groupManagerProvider.getSingleGroupDetail(this.groupId);
     this.gameStatusProvider.gameStartListener();
     this.gameStatusProvider.gameEndListener();
     this.profileEditorProvider.checkExistenceConcurrently();

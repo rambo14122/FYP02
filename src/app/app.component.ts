@@ -16,7 +16,7 @@ export class MyApp {
   constructor(public profileEditorProvider: ProfileEditorProvider, public userLoginProvider: UserLoginProvider, toastHandleProvider: ToastHandlerProvider, storage: Storage, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {
       statusBar.styleDefault();
-      // storage.clear();
+      storage.clear();
 
       storage.get("currentUserUid").then((val) => {
         if (val) {

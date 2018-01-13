@@ -96,58 +96,7 @@ export class AdminPage {
       return;
     }
 
-    var locationDetails = this.gameDetails['LocationTable'];
-    var puzzleDetails = this.gameDetails['PuzzleTable'];
-    var locationIds = Object.keys(locationDetails);
-    var finalMapToSet = [];
-    var locationOrder = [];
-    for (let groupId of this.groupDetailKeys) {
-      var puzzleOrder = 0;
-      var allPuzzles = [];
-      var groupStatus = {} as GroupStatus;
-      locationOrder.push(0);
-      var randomStartLocation = Math.ceil(Math.random() * (locationIds.length - 1));
-      locationOrder.push(randomStartLocation);
-      for (var i = 0; i < locationIds.length - 2; i++) {
-        randomStartLocation++;
-        if (randomStartLocation == locationIds.length) {
-          randomStartLocation = 1;
-        }
-        locationOrder.push(randomStartLocation);
-      }
-      for (var j = 0; j < locationOrder.length; j++) {
-        var locationIdTemp = "";
-        for (let locationId of locationIds) {
-          if (locationDetails[locationId]['order'] == locationOrder[j]) {
-            locationIdTemp = locationId;
-            break;
-          }
-        }
-        if (puzzleDetails[locationIdTemp] != null) {
-          var puzzleIds = Object.keys(puzzleDetails[locationIdTemp]);
-          for (let key of puzzleIds) {
-            var puzzleStatus = {} as PuzzleStatus;
-            puzzleStatus.hint1 = false;
-            puzzleStatus.hint2 = false;
-            puzzleStatus.order = puzzleOrder++;
-            puzzleStatus.solved = false;
-            puzzleStatus.solvedBy = "";
-            allPuzzles[key] = puzzleStatus;
-          }
-        }
-      }
-      groupStatus.finishTime = "";
-      groupStatus.puzzles = allPuzzles;
-      groupStatus.point = 50;
-      finalMapToSet[groupId] = groupStatus;
-    }
-
-
-    this.gameStatusProvider.initializeGroupPuzzles(finalMapToSet).then(() => {
-      this.toastHandlerProvider.presentToast("Game started");
-    }).catch(() => {
-    });
-    // this.gameStatusProvider.gameStart()
+    this.gameStatusProvider.startGame();
   }
 
   gameEnd() {

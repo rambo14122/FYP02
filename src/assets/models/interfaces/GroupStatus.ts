@@ -4,4 +4,5 @@ export interface GroupStatus {
   puzzles: PuzzleStatus[],
   finishTime: string;
   point:number;
+  startTime:string;
 }

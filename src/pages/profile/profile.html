@@ -8,13 +8,15 @@
     <img src="{{userTemp.photoUrl}}">
   </div>
   <ion-item>
-    <ion-input type="text" placeholder="Display name:" [(ngModel)]="userTemp.name"></ion-input>
+    <ion-input type="text" [(ngModel)]="userTemp.name"></ion-input>
   </ion-item>
-
+  <div>
+    <button ion-button round outline (click)="proceed()">Proceed without Picture</button>
+  </div>
   <div>
     <button ion-button round outline (click)="chooseImage()">Choose from gallery</button>
   </div>
   <div [hidden]="!moveOn">
-    <button ion-button round outline (click)="updateProfileImage()">Proceed</button>
+    <button ion-button round outline (click)="updateProfileImage()">Upload & Proceed</button>
   </div>
 </ion-content>

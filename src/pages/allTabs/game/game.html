@@ -14,11 +14,15 @@
     </div>
     <div *ngIf="groupStatus!=''&&groupStatus!=null">Welcome, please wait for the game master to start the game!</div>
   </div>
-  <div *ngIf="gameInProgress">
-    <div *ngIf="groupStatus==''"><p>Game has already started, you can not join group now, follow others and enjoy!</p>
-    </div>
+  <div *ngIf="gameInProgress&&groupStart==false&&groupLeaderFlag">
+    <p>Game master has started the game, join game if teammates are ready.</p>
+    <button ion-button block color="danger" (click)="startGame()">We are ready, lets START!</button>
+  </div>
+  <div *ngIf="gameInProgress&&groupStart==false&&groupLeaderFlag==false">
+    Game master has started the game, ask your game leader to start the game.
+  </div>
+  <div *ngIf="gameInProgress&&groupStart">
     <div *ngIf="groupStatus!=''&&groupStatus!=null">
-
       <ion-list>
         <ion-item-group *ngFor="let puzzleId of puzzleIds">
           <ion-item class="solvedPuzzle" *ngIf="puzzleStatusDetails[puzzleId].solved==true">
@@ -47,7 +51,7 @@
   </div>
 </ion-content>
 <ion-footer>
-  <div *ngIf="groupStatus!=''&&groupStatus!=null&&gameInProgress">
+  <div *ngIf="groupStatus!=''&&groupStatus!=null&&gameInProgress&&groupStart">
     <ion-toolbar color="hcolor">
       <ion-grid style="color: white">
         <ion-row style="text-align: center;">

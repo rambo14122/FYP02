@@ -49,7 +49,7 @@
   <ion-item-group *ngIf="addPuzzleFlag||editPuzzleFlag">
     <ion-item>
       <ion-label floating>Puzzle title:</ion-label>
-      <ion-input  type="text" placeholder="Puzzle title:"
+      <ion-input  type="text"
                  [(ngModel)]="puzzleTemp.title"></ion-input>
     </ion-item>
     <ion-item>
@@ -59,17 +59,17 @@
     </ion-item>
     <ion-item>
       <ion-label floating>Puzzle hint1:</ion-label>
-      <ion-input type="text" placeholder="Puzzle hint1:"
+      <ion-input type="text"
                  [(ngModel)]="puzzleTemp.hint1"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label floating>Puzzle hint2:</ion-label>
-      <ion-input type="text" placeholder="Puzzle hint2:"
+      <ion-input type="text"
                  [(ngModel)]="puzzleTemp.hint2"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label floating>Puzzle answer:</ion-label>
-      <ion-input type="text" placeholder="Puzzle answer:"
+      <ion-input type="text"
                  [(ngModel)]="puzzleTemp.answer"></ion-input>
     </ion-item>
     <ion-item>
@@ -82,7 +82,7 @@
     </ion-item>
     <ion-item *ngIf="editPuzzleFlag">
       <ion-label floating>Puzzle order:</ion-label>
-      <ion-input *ngIf="editPuzzleFlag" type="text" placeholder="Puzzle order:"
+      <ion-input *ngIf="editPuzzleFlag" type="text"
                  [(ngModel)]="puzzleTemp.order"></ion-input>
     </ion-item>
 

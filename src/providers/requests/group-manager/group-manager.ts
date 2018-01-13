@@ -58,4 +58,15 @@ export class GroupManagerProvider {
     });
   }
 
+  quitGroup(groupId, memberId) {
+    var promise = new Promise((resolve, reject) => {
+      this.fireDataBase.child(groupId).child('member').remove(memberId).then(() => {
+        resolve({success: true});
+      }).catch(() => {
+
+      });
+    });
+    return promise;
+  }
+
 }

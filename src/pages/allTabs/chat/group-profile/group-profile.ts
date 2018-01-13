@@ -21,6 +21,7 @@ export class GroupProfilePage {
 
   constructor(public profileEditorProvider: ProfileEditorProvider, public userLoginProvider: UserLoginProvider, public toastHandlerProvider: ToastHandlerProvider, public galleryHandlerProvider: GalleryHandlerProvider, public platform: Platform, public ngZone: NgZone, public loaderHandlerProvider: LoaderHandlerProvider, public ImageHandlerProvider: ImageHandlerProvider, public groupManagerProvider: GroupManagerProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.groupTemp.photoUrl = this.groupManagerProvider.groupImageDefault;
+    this.groupTemp.groupCreator = this.userLoginProvider.getCurrentUserUid();
   }
 
   chooseImage() {
@@ -33,6 +34,11 @@ export class GroupProfilePage {
       this.moveOn = true;
     }).catch(() => {
     });
+  }
+
+  proceed() {
+    this.groupTemp.photoUrl = this.groupManagerProvider.groupImageDefault;
+    this.updateProfileImage();
   }
 
   updateProfileImage() {

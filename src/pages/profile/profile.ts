@@ -41,18 +41,23 @@ export class ProfilePage {
   }
 
   updateProfileImage() {
-    if (this.userTemp.photoUrl == "") {
+    if (this.userTemp.name == "") {
       this.toastHandlerProvider.presentToast("Display name can not be empty");
       return;
     }
     this.loaderHandlerProvider.presentLoader("Updating profile");
     this.userTemp.edited = true;
-    this.userTemp.group="";
+    this.userTemp.group = "";
     this.profileEditorProvider.updateProfile(this.userTemp).then(() => {
       this.loaderHandlerProvider.dismissLoader();
       this.navCtrl.setRoot("TabPage");
     }).catch(() => {
       this.loaderHandlerProvider.dismissLoader();
     });
+  }
+
+  proceed() {
+    this.userTemp.photoUrl = this.profileEditorProvider.defaultImageUrl;
+    this.updateProfileImage();
   }
 }
