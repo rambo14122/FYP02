@@ -9,7 +9,7 @@
 
 <ion-content padding>
   <div *ngIf="gameEndFlag">
-    <div *ngIf="groupStatus==''"><p>You have to join a group first</p>
+    <div *ngIf="groupStatus==''||groupStatus==null"><p>You have to join a group first</p>
       <button ion-button block color="danger" (click)="joinGroup()">Join Group</button>
     </div>
     <div *ngIf="groupStatus!=''&&groupStatus!=null">Welcome, please wait for the game master to start the game!</div>
@@ -18,7 +18,7 @@
     <p>Game master has started the game, join game if teammates are ready.</p>
     <button ion-button block color="danger" (click)="startGame()">We are ready, lets START!</button>
   </div>
-  <div *ngIf="gameInProgress&&groupStart==false&&groupLeaderFlag==false">
+  <div *ngIf="gameInProgress&&groupStart==false&&groupLeaderFlag==false&&groupStatus!=null&&groupStatus!=''">
     Game master has started the game, ask your game leader to start the game.
   </div>
   <div *ngIf="gameInProgress&&groupStart">
@@ -39,13 +39,16 @@
             </ion-item>
           </ion-item>
         </ion-item-group>
-        <ion-item class="unsolved" *ngIf="firstUnsolvedId" color="hcolor" (click)="solveThePuzzle(firstUnsolvedId)">
-          <ion-thumbnail item-start>
-            <img src={{puzzleDetailArray[firstUnsolvedId].photoUrl}}>
-          </ion-thumbnail>
-          <h2>{{puzzleDetailArray[firstUnsolvedId].title}}</h2>
-          <p>To be solved</p>
-        </ion-item>
+        <div *ngIf="firstUnsolvedId">
+          <ion-item class="unsolved" color="hcolor" (click)="solveThePuzzle(firstUnsolvedId)">
+            <ion-thumbnail item-start>
+              <img src={{puzzleDetailArray[firstUnsolvedId].photoUrl}}>
+            </ion-thumbnail>
+            <h2>{{puzzleDetailArray[firstUnsolvedId].title}}</h2>
+            <p>Await your challenge!</p>
+          </ion-item>
+          <div class="spacer" style="height: 50px;"></div>
+        </div>
       </ion-list>
     </div>
   </div>
@@ -62,7 +65,14 @@
             Point: {{point}}
           </ion-col>
         </ion-row>
+        <ion-row>
+          <div class="progress-outer">
+            <div class="progress-inner" [style.width]="solvedPuzzles.length/puzzleIds.length*100 + '%'">
+            </div>
+          </div>
+        </ion-row>
       </ion-grid>
     </ion-toolbar>
   </div>
+
 </ion-footer>

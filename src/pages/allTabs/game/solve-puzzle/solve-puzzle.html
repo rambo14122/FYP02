@@ -89,6 +89,12 @@
           Point: {{point}}
         </ion-col>
       </ion-row>
+      <ion-row>
+        <div class="progress-outer">
+          <div class="progress-inner" [style.width]="gameProgress*100 + '%'">
+          </div>
+        </div>
+      </ion-row>
     </ion-grid>
   </ion-toolbar>
 </ion-footer>

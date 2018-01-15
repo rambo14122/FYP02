@@ -1,5 +1,5 @@
-import {Component} from '@angular/core';
-import {Events, IonicPage, NavController, NavParams} from 'ionic-angular';
+import {Component, ViewChild} from '@angular/core';
+import {Content, Events, IonicPage, NavController, NavParams} from 'ionic-angular';
 import {ProfileEditorProvider} from '../../../providers/requests/profile-editor/profile-editor';
 import {ToastHandlerProvider} from '../../../providers/utility/toast-handler/toast-handler';
 import {GroupManagerProvider} from '../../../providers/requests/group-manager/group-manager';
@@ -18,6 +18,7 @@ import {GroupStatus} from '../../../assets/models/interfaces/GroupStatus';
 })
 
 export class GamePage {
+  @ViewChild(Content) content: Content;
   groupStatus: string;
   groupLeaderFlag = false;
   gameInProgress = false;
@@ -38,8 +39,10 @@ export class GamePage {
   firstUnsolvedId: string;
   groupStart = false;
   gameDetails;
+  solvedPuzzles = [];
 
   constructor(public userLoginProvider: UserLoginProvider, public gameManagerProvider: GameManagerProvider, public gameStatusProvider: GameStatusProvider, public events: Events, public groupManagerProvider: GroupManagerProvider, public toastHandlerProvider: ToastHandlerProvider, public profileEditorProvider: ProfileEditorProvider, public navCtrl: NavController, public navParams: NavParams) {
+
     this.gameInProgress = false;
     this.point = 0;
     this.gameEndFlag = false;
@@ -54,14 +57,8 @@ export class GamePage {
     });
     this.events.subscribe('newGameStart', () => {
       if (this.gameStatusProvider.gameStartTime != null && this.gameStatusProvider.gameStartTime != "") {
-        this.gameStartTime = this.gameStatusProvider.gameStartTime;
         this.gameStartFlag = true;
         this.gameInProgress = true;
-        this.timer = parseInt(this.gameStatusProvider.getTimeStamp()) - parseInt(this.gameStartTime);
-        clearInterval(this.timerInterval);
-        this.timerInterval = setInterval(() => {
-          this.timer += 1000;
-        }, 1000);
       }
       else {
         this.gameInProgress = false;
@@ -103,6 +100,15 @@ export class GamePage {
         this.gameManagerProvider.getGameDetail();
       }
       else {
+        //todo
+
+        this.gameStartTime = this.gameStatusProvider.gameStartTime;
+        this.timer = parseInt(this.gameStatusProvider.getTimeStamp()) - parseInt(this.gameStartTime);
+        clearInterval(this.timerInterval);
+        this.timerInterval = setInterval(() => {
+          this.timer += 1000;
+        }, 1000);
+
         this.groupStart = true;
         this.gameFinishFlag = false;
         this.puzzleStatusDetails = [];
@@ -115,8 +121,12 @@ export class GamePage {
           return 0;
         }));
         this.point = this.puzzleStatus['point'];
+        this.solvedPuzzles = [];
         for (let puzzleId of this.puzzleIds) {
           this.puzzleStatusTemp = this.puzzleStatus['puzzles'][puzzleId];
+          if (this.puzzleStatusTemp.solved) {
+            this.solvedPuzzles.push(puzzleId);
+          }
           if ((this.firstUnsolvedId == "" || this.firstUnsolvedId == null) && this.puzzleStatusTemp.solved == false) {
             this.firstUnsolvedId = puzzleId;
           }
@@ -135,7 +145,6 @@ export class GamePage {
             console.log("details", this.puzzleDetailArray);
           }
         }
-
       }
     });
   }
@@ -159,6 +168,7 @@ export class GamePage {
 
     }
   }
+
 
   startGame() {
     if (this.gameDetails == null) {
@@ -216,13 +226,13 @@ export class GamePage {
   }
 
   solveThePuzzle(puzzleId) {
-
     this.navCtrl.push("SolvePuzzlePage", {
       "GroupId": this.groupStatus,
       "PuzzleId": puzzleId,
       "PuzzleDetail": this.puzzleDetailArray[puzzleId],
       "GameStartTime": this.gameStartTime,
-      "Point": this.point
+      "Point": this.point,
+      "GameProgress": this.solvedPuzzles.length / this.puzzleIds.length
     }).then(() => {
       this.firstUnsolvedId = "";
     });

@@ -19,13 +19,14 @@ export class SolvePuzzlePage {
   timer: any;
   point: number;
   timerInterval: any;
-
+  gameProgress:number;
   constructor(public toastHandlerProvider: ToastHandlerProvider, public events: Events, public gameStatusProvider: GameStatusProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.puzzleToSolveId = this.navParams.get("PuzzleId");
     this.puzzleDetail = this.navParams.get("PuzzleDetail");
     this.groupStatus = this.navParams.get("GroupId");
     this.gameStartTime = this.navParams.get("GameStartTime");
     this.point = this.navParams.get("Point");
+    this.gameProgress=this.navParams.get("GameProgress");
     this.answerTemp = "";
     this.timer = parseInt(this.gameStatusProvider.getTimeStamp()) - parseInt(this.gameStartTime);
     clearInterval(this.timerInterval);

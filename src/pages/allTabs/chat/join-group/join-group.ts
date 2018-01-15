@@ -73,7 +73,6 @@ export class JoinGroupPage {
 
   quitGroup(groupId) {
     this.groupManagerProvider.quitGroup(groupId, this.userLoginProvider.getCurrentUserUid()).then(() => {
-
     }).catch(() => {
 
     });
