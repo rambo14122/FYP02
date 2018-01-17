@@ -50,7 +50,14 @@ export class GroupProfilePage {
     this.loaderHandlerProvider.presentLoader("Updating team profile");
     var groupId = this.groupManagerProvider.setGroupIdByTimeStamp();
     if (this.groupManagerProvider.groupDetails != null) {
-      this.groupTemp.groupNumber = Object.keys(this.groupManagerProvider.groupDetails).length + 1;
+      var maxNumber = 0;
+      var groupKeys = Object.keys(this.groupManagerProvider.groupDetails);
+      for (let key of groupKeys) {
+        if (this.groupDetails[key]['groupNumber'] > maxNumber) {
+          maxNumber = this.groupDetails[key]['groupNumber'];
+        }
+      }
+      this.groupTemp.groupNumber = maxNumber + 1;
     }
     else {
       this.groupTemp.groupNumber = 1;
