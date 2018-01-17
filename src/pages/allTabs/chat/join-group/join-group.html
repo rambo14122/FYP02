@@ -1,4 +1,4 @@
-<ion-header >
+<ion-header>
 
   <ion-navbar color="hcolor">
     <ion-title>JoinGroup</ion-title>
@@ -8,18 +8,27 @@
 
 
 <ion-content padding>
-  <ion-list >
-    <ion-item *ngFor="let keyTemp of groupDetailKeys">
+  <ion-searchbar [(ngModel)]="queryString" (input)="searchGroup($event)"
+                 placeholder="search by name or group no."></ion-searchbar>
+  <ion-list>
+    <ion-item *ngFor="let keyTemp of tempForDisplayKeys" text-wrap>
       <ion-avatar item-start>
         <img src={{groupDetails[keyTemp].photoUrl}}>
       </ion-avatar>
       <h2>{{groupDetails[keyTemp].name}}</h2>
-      <p><i>Group created on: {{keyTemp| date:'HH:mm ,dd MMM'}}</i></p>
+      <p><i>Created on: {{keyTemp| date:'HH:mm ,dd MMM'}}</i></p>
+      <p><i>Group no. :{{("00"+groupDetails[keyTemp].groupNumber).slice(-3)}}</i></p>
       <p>No.of user:{{memberNumber[keyTemp]}}/10</p>
-      <button *ngIf="memberNumber[keyTemp]!=10&&(groupStatus==null||groupStatus==''||groupStatus!=keyTemp)" ion-button clear item-end (click)="joinGroup(keyTemp)">Join</button>
-      <button *ngIf="(groupStatus!=null&&groupStatus!=''&&groupStatus==keyTemp)" color='danger' ion-button clear item-end (click)="quitGroup(keyTemp)">Quit</button>
+      <button *ngIf="memberNumber[keyTemp]!=10&&(groupStatus==null||groupStatus==''||groupStatus!=keyTemp)" ion-button
+              clear item-end (click)="joinGroup(keyTemp)">Join
+      </button>
+      <button *ngIf="(groupStatus!=null&&groupStatus!=''&&groupStatus==keyTemp)" color='danger' ion-button clear
+              item-end (click)="quitGroup(keyTemp)">Quit
+      </button>
 
     </ion-item>
   </ion-list>
-  <button  ion-button block color="danger" (click)="createGroup()">Create Group</button>
+  <button *ngIf="groupStatus==null||groupStatus==''" ion-button block color="danger" (click)="createGroup()">Create
+    Group
+  </button>
 </ion-content>

@@ -23,8 +23,8 @@ export class UserLoginProvider {
   getCurrentUserUid() {
 
     //for testing only
-    return "rambo1412";
-    // return this.device.uuid;
+    // return "rambo1412";
+    return this.device.uuid;
   }
 
   getCurrentUser() {

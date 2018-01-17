@@ -18,8 +18,9 @@ import {ProfileEditorProvider} from '../../../../providers/requests/profile-edit
 export class GroupProfilePage {
   moveOn = false;
   groupTemp = {} as GroupInterface;
+  groupDetails: any;
 
-  constructor(public profileEditorProvider: ProfileEditorProvider, public userLoginProvider: UserLoginProvider, public toastHandlerProvider: ToastHandlerProvider, public galleryHandlerProvider: GalleryHandlerProvider, public platform: Platform, public ngZone: NgZone, public loaderHandlerProvider: LoaderHandlerProvider, public ImageHandlerProvider: ImageHandlerProvider, public groupManagerProvider: GroupManagerProvider, public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public events: Events, public profileEditorProvider: ProfileEditorProvider, public userLoginProvider: UserLoginProvider, public toastHandlerProvider: ToastHandlerProvider, public galleryHandlerProvider: GalleryHandlerProvider, public platform: Platform, public ngZone: NgZone, public loaderHandlerProvider: LoaderHandlerProvider, public ImageHandlerProvider: ImageHandlerProvider, public groupManagerProvider: GroupManagerProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.groupTemp.photoUrl = this.groupManagerProvider.groupImageDefault;
     this.groupTemp.groupCreator = this.userLoginProvider.getCurrentUserUid();
   }
@@ -48,6 +49,13 @@ export class GroupProfilePage {
     }
     this.loaderHandlerProvider.presentLoader("Updating team profile");
     var groupId = this.groupManagerProvider.setGroupIdByTimeStamp();
+    if (this.groupManagerProvider.groupDetails != null) {
+      this.groupTemp.groupNumber = Object.keys(this.groupManagerProvider.groupDetails).length + 1;
+    }
+    else {
+      this.groupTemp.groupNumber = 1;
+    }
+
     this.groupManagerProvider.updateGroupProfile(groupId, this.groupTemp).then(() => {
       this.groupManagerProvider.updateGroupMember(groupId, this.userLoginProvider.getCurrentUserUid()).then(() => {
         this.profileEditorProvider.updatePersonalGroupStatus(groupId, this.userLoginProvider.getCurrentUserUid()).then(() => {
@@ -61,5 +69,9 @@ export class GroupProfilePage {
     }).catch(() => {
       this.loaderHandlerProvider.dismissLoader();
     });
+  }
+
+  ionViewWillEnter() {
+    this.groupManagerProvider.getGroupDetails();
   }
 }

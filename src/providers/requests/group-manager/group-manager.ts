@@ -3,6 +3,7 @@ import firebase from 'firebase';
 import {GroupInterface} from '../../../assets/models/interfaces/GroupInterface';
 import {Events} from 'ionic-angular';
 import {UserLoginProvider} from '../../login/user-login/user-login';
+import {ProfileEditorProvider} from '../profile-editor/profile-editor';
 
 
 @Injectable()
@@ -14,7 +15,7 @@ export class GroupManagerProvider {
   singleGroupDetail = {} as GroupInterface
   groupId: string;
 
-  constructor(public userLoginProvider: UserLoginProvider, public events: Events) {
+  constructor(public profileEditorProvider: ProfileEditorProvider, public userLoginProvider: UserLoginProvider, public events: Events) {
   }
 
   getGroupDetails() {
@@ -32,7 +33,6 @@ export class GroupManagerProvider {
     var promise = new Promise((resolve, reject) => {
       this.fireDataBase.child(groupId).set(groupTemp).then(() => {
         resolve({success: true});
-        console.log("successProfile")
       }).catch((err) => {
         reject(err);
       })
@@ -53,14 +53,32 @@ export class GroupManagerProvider {
     if (groupId == null || groupId == "")
       return;
     this.fireDataBase.child(groupId).on('value', (snapshot) => {
-      this.singleGroupDetail = snapshot.val();
-      this.events.publish('singleGroupDetail');
+      if (snapshot.val() == null) {
+        this.profileEditorProvider.updatePersonalGroupStatus("", this.userLoginProvider.getCurrentUserUid()).then(() => {
+        }).catch(() => {
+        });
+      }
+      else {
+        this.singleGroupDetail = snapshot.val();
+        this.events.publish('singleGroupDetail');
+      }
     });
   }
 
-  quitGroup(groupId, memberId) {
+  quitGroup(groupId, memberKey) {
     var promise = new Promise((resolve, reject) => {
-      this.fireDataBase.child(groupId).child('member').remove(memberId).then(() => {
+      this.fireDataBase.child(groupId).child('member').child(memberKey).remove().then(() => {
+        resolve({success: true});
+      }).catch(() => {
+
+      });
+    });
+    return promise;
+  }
+
+  deleteGroup(groupId) {
+    var promise = new Promise((resolve, reject) => {
+      this.fireDataBase.child(groupId).remove().then(() => {
         resolve({success: true});
       }).catch(() => {
 

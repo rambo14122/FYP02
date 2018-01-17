@@ -17,7 +17,6 @@ export class TabPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public events: Events, public profileEditorProvider: ProfileEditorProvider) {
     this.events.subscribe("allUserProfile", () => {
-      console.log(this.profileEditorProvider.allUserDetail);
     });
   }
 

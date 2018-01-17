@@ -19,7 +19,9 @@ export class ChatPage {
   gameEndFlag = false;
   gameStartFlag = false;
   groupStatus: string;
-
+  puzzleStatus: {};
+  gameGroupStartFlag = false;
+  leaderName: '';
   constructor(public gameStatusProvider: GameStatusProvider, public events: Events, public groupManagerProvider: GroupManagerProvider, public profileEditorProvider: ProfileEditorProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.noGroupFlag = false;
     this.gotGroupFlag = false;
@@ -28,7 +30,6 @@ export class ChatPage {
     this.gameStartFlag = false;
     this.profileEditorProvider.setUid();
     this.events.subscribe('userProfileUpdate', () => {
-      console.log(this.profileEditorProvider.currentUserDetail);
       this.groupStatus = this.profileEditorProvider.currentUserDetail.group;
       if (this.groupStatus == null || this.groupStatus == "") {
         this.noGroupFlag = true;
@@ -47,6 +48,7 @@ export class ChatPage {
     this.events.subscribe('singleGroupDetail', () => {
       if (this.groupManagerProvider.singleGroupDetail != null) {
         this.singleGroupDetail = this.groupManagerProvider.singleGroupDetail;
+        this.leaderName = this.profileEditorProvider.allUserDetail[this.singleGroupDetail.groupCreator].name;
       }
     });
     this.events.subscribe('newGameStart', () => {
@@ -68,12 +70,31 @@ export class ChatPage {
         this.gameEndFlag = false;
       }
     });
+    this.events.subscribe('gameStatusByGroup', () => {
+
+      this.puzzleStatus = this.gameStatusProvider.gameStatusByGroup;
+      if (this.puzzleStatus == null) {
+        this.gameGroupStartFlag = false;
+        return;
+      }
+      if (this.puzzleStatus['finishTime'] != "" && this.puzzleStatus['finishTime'] != null) {
+        this.gameEndFlag = true;
+        this.gameGroupStartFlag = false;
+      }
+      else {
+        this.gameGroupStartFlag = true;
+      }
+    });
   }
 
   ionViewWillEnter() {
     this.gameStatusProvider.gameStartListener();
     this.gameStatusProvider.gameEndListener();
     this.profileEditorProvider.checkExistenceConcurrently();
+    if (this.groupStatus != null && this.groupStatus != '') {
+      this.gameStatusProvider.gameStatusListenerByGroup(this.groupStatus);
+    }
+
   }
 
   joinGroup() {

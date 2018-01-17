@@ -5,6 +5,7 @@ import {GroupInterface} from '../../../../../platforms/android/build/intermediat
 import {ProfileEditorProvider} from '../../../../providers/requests/profile-editor/profile-editor';
 import {UserLoginProvider} from '../../../../providers/login/user-login/user-login';
 import {LoaderHandlerProvider} from '../../../../providers/utility/loader-handler/loader-handler';
+import {ToastHandlerProvider} from '../../../../providers/utility/toast-handler/toast-handler';
 
 @IonicPage()
 @Component({
@@ -17,8 +18,9 @@ export class JoinGroupPage {
   groupDetailKeys: any = [];
   memberNumber: any = [];
   groupStatus: string;
+  tempForDisplayKeys: any;
 
-  constructor(public loaderHandlerProvider: LoaderHandlerProvider, public userLoginProvider: UserLoginProvider, public profileEditorProvider: ProfileEditorProvider, public groupManagerProvider: GroupManagerProvider, public events: Events, public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public toastHandlerProvider: ToastHandlerProvider, public loaderHandlerProvider: LoaderHandlerProvider, public userLoginProvider: UserLoginProvider, public profileEditorProvider: ProfileEditorProvider, public groupManagerProvider: GroupManagerProvider, public events: Events, public navCtrl: NavController, public navParams: NavParams) {
     this.memberNumber = [];
     this.groupStatus = "";
     this.events.subscribe('userProfileUpdate', () => {
@@ -32,6 +34,7 @@ export class JoinGroupPage {
       if (this.groupManagerProvider.groupDetails != null) {
         this.groupDetails = this.groupManagerProvider.groupDetails;
         this.groupDetailKeys = Object.keys(this.groupDetails);
+        this.tempForDisplayKeys = this.groupDetailKeys;
         for (let key of this.groupDetailKeys) {
           if (this.groupDetails[key]['member'] != null) {
             this.memberNumber[key] = (Object.keys(this.groupDetails[key]['member']).length);
@@ -44,11 +47,40 @@ export class JoinGroupPage {
 
   }
 
+  searchGroup(searchBar) {
+    this.tempForDisplayKeys = this.groupDetailKeys;
+    var query = searchBar.target.value;
+    if (query.trim() == '') {
+      return;
+    }
+    if (!isNaN(query)) {
+      query = parseInt(query) + '';
+    }
+    query = query.toLowerCase();
+    this.tempForDisplayKeys = this.tempForDisplayKeys.filter((key) => {
+
+      if (((this.groupDetails[key]['groupNumber'] + '').toLowerCase().indexOf(query) > -1) || ((this.groupDetails[key]['name']).toLowerCase().indexOf(query) > -1)) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    })
+  }
+
   joinGroup(groupId) {
     this.loaderHandlerProvider.presentLoader("Joining Group");
+    if (this.groupStatus != null && this.groupStatus != '') {
+      var memberId = this.userLoginProvider.getCurrentUserUid();
+      var memberKey = Object.keys(this.groupDetails[this.groupStatus]['member']).find(key => this.groupDetails[groupId]['member'][key] === memberId);
+      this.deleteAlgorithm(this.groupStatus, memberId, memberKey).then(() => {
+      }).catch(() => {
+      });
+    }
     this.groupManagerProvider.updateGroupMember(groupId, this.userLoginProvider.getCurrentUserUid()).then(() => {
       this.profileEditorProvider.updatePersonalGroupStatus(groupId, this.userLoginProvider.getCurrentUserUid()).then(() => {
         this.loaderHandlerProvider.dismissLoader();
+
         if (this.navCtrl.canGoBack()) {
           this.navCtrl.pop();
         }
@@ -72,9 +104,32 @@ export class JoinGroupPage {
   }
 
   quitGroup(groupId) {
-    this.groupManagerProvider.quitGroup(groupId, this.userLoginProvider.getCurrentUserUid()).then(() => {
+    var memberId = this.userLoginProvider.getCurrentUserUid();
+    var memberKey = Object.keys(this.groupDetails[groupId]['member']).find(key => this.groupDetails[groupId]['member'][key] === memberId);
+    this.profileEditorProvider.updatePersonalGroupStatus("", memberId).then(() => {
+      this.deleteAlgorithm(groupId, memberId, memberKey).then(() => {
+      }).catch(() => {
+      });
     }).catch(() => {
-
     });
+
+
+  }
+
+  deleteAlgorithm(groupId, memberId, memberKey) {
+    var promise = new Promise((resolve, reject) => {
+      if (this.memberNumber[groupId] > 1 && memberId != this.groupDetails[groupId]['groupCreator']) {
+        this.groupManagerProvider.quitGroup(groupId, memberKey).then(() => {
+        }).catch(() => {
+          this.toastHandlerProvider.presentToast("You have quited the group");
+        });
+      }
+      else {
+        this.groupManagerProvider.deleteGroup(groupId).then(() => {
+          this.toastHandlerProvider.presentToast("You have dismissed the group");
+        });
+      }
+    });
+    return promise;
   }
 }

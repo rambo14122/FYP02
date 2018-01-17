@@ -101,7 +101,6 @@ export class GamePage {
       }
       else {
         //todo
-
         this.gameStartTime = this.gameStatusProvider.gameStartTime;
         this.timer = parseInt(this.gameStatusProvider.getTimeStamp()) - parseInt(this.gameStartTime);
         clearInterval(this.timerInterval);
@@ -171,6 +170,7 @@ export class GamePage {
 
 
   startGame() {
+    console.log("Game Details:",this.gameDetails);
     if (this.gameDetails == null) {
       this.toastHandlerProvider.presentToast("Can not fetch game detail, try again later");
       return;

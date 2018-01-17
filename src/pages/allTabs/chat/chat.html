@@ -6,17 +6,19 @@
 
 </ion-header>
 <ion-content padding>
-  <div *ngIf="gameEndFlag">
+  <div *ngIf="gameGroupStartFlag!=true||gameEndFlag">
     <button *ngIf="noGroupFlag" ion-button block color="danger" (click)="joinGroup()">Join Group Now</button>
-    <ion-item  *ngIf="gotGroupFlag">
+    <ion-item *ngIf="gotGroupFlag">
       <ion-avatar item-start>
         <img src={{singleGroupDetail.photoUrl}}>
       </ion-avatar>
       <h2>{{singleGroupDetail.name}}</h2>
+      <p><i>Leader:{{leaderName}}</i></p>
+      <p>Group no.:{{("00"+singleGroupDetail.groupNumber).slice(-3)}}</p>
     </ion-item>
     <button *ngIf="gotGroupFlag" ion-button block color="danger" (click)="changeGroup()">Change Group</button>
   </div>
-  <div *ngIf="gameInProgress">
-    Game is in progress. You can not change or join group.
+  <div *ngIf="gameInProgress&&gameGroupStartFlag">
+    Game is in progress. You can not change or quit group.
   </div>
 </ion-content>

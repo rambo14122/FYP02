@@ -3,4 +3,5 @@ export interface GroupInterface {
   photoUrl: string;
   members: string[];
   groupCreator: string;
+  groupNumber:number;
 }
