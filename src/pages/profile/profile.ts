@@ -24,8 +24,15 @@ export class ProfilePage {
   moveOn = false;
 
   constructor(public toastHandlerProvider: ToastHandlerProvider, public galleryHandlerProvider: GalleryHandlerProvider, public platform: Platform, public ngZone: NgZone, public loaderHandlerProvider: LoaderHandlerProvider, public ImageHandlerProvider: ImageHandlerProvider, public profileEditorProvider: ProfileEditorProvider, public navCtrl: NavController, public navParams: NavParams) {
-    this.userTemp.photoUrl = this.profileEditorProvider.defaultImageUrl;
-    this.userTemp.edited = false;
+    if (this.navParams.get("photoUrl") == null || this.navParams.get("photoUrl") == "") {
+      this.userTemp.photoUrl = this.profileEditorProvider.defaultImageUrl;
+      this.userTemp.edited = false;
+    }
+    else {
+      this.userTemp.name = this.navParams.get("userName");
+      this.userTemp.edited = true;
+      this.userTemp.photoUrl = this.navParams.get("photoUrl");
+    }
   }
 
   chooseImage() {
@@ -41,7 +48,7 @@ export class ProfilePage {
   }
 
   updateProfileImage() {
-    if (this.userTemp.name == "") {
+    if (this.userTemp.name == "" || this.userTemp.name == null) {
       this.toastHandlerProvider.presentToast("Display name can not be empty");
       return;
     }

@@ -1,14 +1,10 @@
 import {Component} from '@angular/core';
-import {IonicPage, NavController, NavParams} from 'ionic-angular';
+import {Events, IonicPage, NavController, NavParams} from 'ionic-angular';
 import {AlertController} from 'ionic-angular';
 import {Storage} from '@ionic/storage';
+import {ProfileEditorProvider} from '../../../providers/requests/profile-editor/profile-editor';
+import {UserInterface} from '../../../assets/models/interfaces/UserInterface';
 
-/**
- * Generated class for the AboutPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage()
 @Component({
@@ -16,7 +12,13 @@ import {Storage} from '@ionic/storage';
   templateUrl: 'about.html',
 })
 export class AboutPage {
-  constructor(public storage: Storage, public alertController: AlertController, public navCtrl: NavController, public navParams: NavParams) {
+  currentUser = {} as UserInterface;
+
+  constructor(public events: Events, public profileEditorProvider: ProfileEditorProvider, public storage: Storage, public alertController: AlertController, public navCtrl: NavController, public navParams: NavParams) {
+    this.currentUser = {} as UserInterface;
+    this.events.subscribe('userProfileUpdate', () => {
+      this.currentUser = this.profileEditorProvider.currentUserDetail;
+    });
   }
 
   checkIfAdmin() {
@@ -31,6 +33,15 @@ export class AboutPage {
       this.presentPrompt();
     })
 
+  }
+
+  ionViewWillEnter() {
+    this.profileEditorProvider.checkExistenceConcurrently();
+  }
+
+
+  editProfile() {
+    this.navCtrl.push("ProfilePage", {'photoUrl': this.currentUser.photoUrl, 'userName': this.currentUser.name});
   }
 
   presentPrompt() {

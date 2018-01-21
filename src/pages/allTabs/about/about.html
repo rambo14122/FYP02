@@ -9,6 +9,14 @@
 
 <ion-content padding>
   <ion-list>
+    <ion-item>
+      <ion-avatar item-start>
+        <img src={{currentUser.photoUrl}}>
+      </ion-avatar>
+      <h2>{{currentUser.name}}</h2>
+      <button ion-button clear item-end (click)="editProfile()">edit
+      </button>
+    </ion-item>
     <ion-item (click)="checkIfAdmin()">
       <ion-icon name="body" item-start></ion-icon>
       Admin Option
