@@ -217,7 +217,7 @@ export class GamePage {
     groupStatus.finishTime = "";
     groupStatus.puzzles = allPuzzles;
     groupStatus.point = 50;
-    groupStatus.startTime = this.gameStatusProvider.getTimeStamp();
+    groupStatus.startTime = this.gameStatusProvider.sendFireBaseTimeStamp();
     finalMapToSet[this.groupStatus] = groupStatus;
     this.gameStatusProvider.initializeGroupPuzzles(finalMapToSet).then(() => {
       this.toastHandlerProvider.presentToast("Game started");

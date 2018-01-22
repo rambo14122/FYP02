@@ -20,9 +20,13 @@ export class GameStatusProvider {
     return (new Date()).getTime() + "";
   }
 
+  sendFireBaseTimeStamp() {
+    return firebase.database.ServerValue.TIMESTAMP;
+  }
+
   startGame() {
     var promise = new Promise((resolve, reject) => {
-      this.fireDataBase.set({"start": this.getTimeStamp(), "GroupTable": "", "end": ""}).then(() => {
+      this.fireDataBase.set({"start": this.sendFireBaseTimeStamp(), "GroupTable": "", "end": ""}).then(() => {
         resolve({success: true});
       }).catch((err) => {
         reject(err);
@@ -45,7 +49,7 @@ export class GameStatusProvider {
 
   gameEnd() {
     var promise = new Promise((resolve, reject) => {
-      this.fireDataBase.update({"end": this.getTimeStamp()}).then(() => {
+      this.fireDataBase.update({"end": this.sendFireBaseTimeStamp()}).then(() => {
         resolve({success: true});
       }).catch((err) => {
         reject(err);

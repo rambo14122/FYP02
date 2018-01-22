@@ -26,7 +26,7 @@
     <div *ngIf="groupStatus!=''&&groupStatus!=null">
       <ion-list>
         <ion-item-group *ngFor="let puzzleId of puzzleIds">
-          <ion-item class="solvedPuzzle" *ngIf="puzzleStatusDetails[puzzleId].solved==true">
+          <ion-item class="solvedPuzzle" *ngIf="puzzleStatusDetails[puzzleId].solved==true" (click)="solveThePuzzle(puzzleId)">
             <ion-thumbnail item-start>
               <img src={{puzzleDetailArray[puzzleId].photoUrl}}>
             </ion-thumbnail>

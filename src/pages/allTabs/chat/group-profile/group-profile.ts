@@ -53,8 +53,8 @@ export class GroupProfilePage {
       var maxNumber = 0;
       var groupKeys = Object.keys(this.groupManagerProvider.groupDetails);
       for (let key of groupKeys) {
-        if (this.groupDetails[key]['groupNumber'] > maxNumber) {
-          maxNumber = this.groupDetails[key]['groupNumber'];
+        if (this.groupManagerProvider.groupDetails[key].groupNumber > maxNumber) {
+          maxNumber = this.groupManagerProvider.groupDetails[key].groupNumber;
         }
       }
       this.groupTemp.groupNumber = maxNumber + 1;
