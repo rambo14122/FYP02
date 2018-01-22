@@ -50,7 +50,7 @@ export class JoinGroupPage {
   searchGroup(searchBar) {
     this.tempForDisplayKeys = this.groupDetailKeys;
     var query = searchBar.target.value;
-    if (query.trim() == '') {
+    if (query == '' || query == null||query.trim() == '' || query.trim() == null) {
       return;
     }
     if (!isNaN(query)) {

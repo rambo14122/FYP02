@@ -54,6 +54,15 @@ export class GamePage {
     this.profileEditorProvider.setUid();
     this.events.subscribe('userProfileUpdate', () => {
       this.groupStatus = this.profileEditorProvider.currentUserDetail.group;
+      if (this.groupStatus != null && this.groupStatus != '') {
+        this.gameManagerProvider.getPuzzleDetailOnce().then((res) => {
+          this.puzzleDetails = res;
+          this.gameStatusProvider.gameStatusListenerByGroup(this.groupStatus);
+          this.groupManagerProvider.getSingleGroupDetail(this.groupStatus);
+        }).catch(() => {
+        });
+
+      }
     });
     this.events.subscribe('newGameStart', () => {
       if (this.gameStatusProvider.gameStartTime != null && this.gameStatusProvider.gameStartTime != "") {
@@ -157,15 +166,8 @@ export class GamePage {
     this.profileEditorProvider.checkExistenceConcurrently();
     this.gameStatusProvider.gameStartListener();
     this.gameStatusProvider.gameEndListener();
-    if (this.groupStatus != null && this.groupStatus != '') {
-      this.gameManagerProvider.getPuzzleDetailOnce().then((res) => {
-        this.puzzleDetails = res;
-        this.gameStatusProvider.gameStatusListenerByGroup(this.groupStatus);
-        this.groupManagerProvider.getSingleGroupDetail(this.groupStatus);
-      }).catch(() => {
-      });
+    //add back
 
-    }
   }
 
 

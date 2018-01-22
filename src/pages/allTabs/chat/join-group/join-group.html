@@ -9,6 +9,7 @@
 
 <ion-content padding>
   <ion-searchbar [(ngModel)]="queryString" (input)="searchGroup($event)"
+                 (ionClear)="searchGroup($event)"
                  placeholder="search by name or group no."></ion-searchbar>
   <ion-list>
     <ion-item *ngFor="let keyTemp of tempForDisplayKeys" text-wrap>
