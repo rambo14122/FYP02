@@ -41,7 +41,11 @@ export class AboutPage {
 
 
   editProfile() {
-    this.navCtrl.push("ProfilePage", {'photoUrl': this.currentUser.photoUrl, 'userName': this.currentUser.name});
+    this.navCtrl.push("ProfilePage", {
+      'photoUrl': this.currentUser.photoUrl,
+      'userName': this.currentUser.name,
+      'group': this.currentUser.group
+    });
   }
 
   presentPrompt() {

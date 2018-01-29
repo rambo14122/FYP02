@@ -20,7 +20,7 @@
     <button ion-button block color="danger" (click)="startGame()">We are ready, lets START!</button>
   </div>
   <div *ngIf="gameInProgress&&groupStart==false&&groupLeaderFlag==false&&groupStatus!=null&&groupStatus!=''">
-    Game master has started the game, ask your game leader to start the game.
+    Game master has started the game, ask your group leader to start the game.
   </div>
   <div *ngIf="gameInProgress&&groupStart">
     <div *ngIf="groupStatus!=''&&groupStatus!=null">

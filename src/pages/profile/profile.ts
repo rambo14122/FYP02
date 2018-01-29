@@ -32,10 +32,12 @@ export class ProfilePage {
       this.userTemp.name = this.navParams.get("userName");
       this.userTemp.edited = true;
       this.userTemp.photoUrl = this.navParams.get("photoUrl");
+      this.userTemp.group = this.navParams.get("group");
     }
   }
 
   chooseImage() {
+    this.moveOn = false;
     this.galleryHandlerProvider.setChosenPath(this.galleryHandlerProvider.profileImagePath);
     this.galleryHandlerProvider.setChosenChildAsUid();
     this.galleryHandlerProvider.getImageFromGallery(1).then((url: any) => {
@@ -43,7 +45,10 @@ export class ProfilePage {
         this.userTemp.photoUrl = url;
       });
       this.moveOn = true;
-    }).catch(() => {
+    }).catch((err) => {
+      if (err == false && this.userTemp.photoUrl != this.profileEditorProvider.defaultImageUrl) {
+        this.moveOn = true;
+      }
     });
   }
 
@@ -54,7 +59,7 @@ export class ProfilePage {
     }
     this.loaderHandlerProvider.presentLoader("Updating profile");
     this.userTemp.edited = true;
-    this.userTemp.group = "";
+    this.userTemp.group = this.userTemp.group + "";
     this.profileEditorProvider.updateProfile(this.userTemp).then(() => {
       this.loaderHandlerProvider.dismissLoader();
       this.navCtrl.setRoot("TabPage");

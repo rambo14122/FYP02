@@ -71,10 +71,6 @@ export class GalleryHandlerProvider {
         quality: 100,
         outputType: 1
       };
-    this.loaderHandlerProvider.presentLoader("Upoading image");
-    setTimeout(() => {
-      this.loaderHandlerProvider.dismissLoader();
-    }, 5000);
     var promise = new Promise((resolve, reject) => {
       this.imagePicker.getPictures(galleryOptions).then((results) => {
           if (numberOfImage == 1) {
@@ -83,8 +79,10 @@ export class GalleryHandlerProvider {
             var imageStore;
             imageStore = this.fireStore.ref(this.chosenPath).child(this.chosenChild);
             imageStore.put(imgBlob).then((res) => {
+              this.loaderHandlerProvider.presentLoader("Uploading Image");
               this.fireStore.ref(this.chosenPath).child(this.chosenChild).getDownloadURL().then((url) => {
                 resolve(url);
+                this.loaderHandlerProvider.dismissLoader();
               }).catch((err) => {
                 reject(err);
 
@@ -95,7 +93,7 @@ export class GalleryHandlerProvider {
           }
         }
       ).catch((err) => {
-        console.log(err);
+        reject(false);
       });
     });
     return promise;
